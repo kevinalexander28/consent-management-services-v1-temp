@@ -20,10 +20,9 @@ public class ConsentAssoc {
     @Column(name = "consentAssocId")
     private long consentAssocId;
     @Column(name = "clauseCode")
-    private String clauseCode;
+    private long clauseCode;
     @Column(name = "lastUpdateUser")
     private String lastUpdateUser;
     @Column(name = "lastUpdateDt")
     private String lastUpdateDt;
-
 }
