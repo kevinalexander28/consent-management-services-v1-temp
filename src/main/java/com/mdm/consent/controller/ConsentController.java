@@ -1,5 +1,6 @@
 package com.mdm.consent.controller;
 
+import com.mdm.consent.dto.ConsentAssocRequest;
 import com.mdm.consent.dto.ConsentRequest;
 import com.mdm.consent.entity.Consent;
 import com.mdm.consent.repository.ConsentAssocRepository;
@@ -76,6 +77,17 @@ public class ConsentController {
         try {
             long consentId = request.getConsent().getConsentId();
             consentRepository.deleteById(consentId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/deleteClause")
+    public ResponseEntity<HttpStatus> deleteClause(@RequestBody ConsentAssocRequest request) {
+        try {
+            long consentAssocId = request.getConsentAssoc().getConsentAssocId();
+            consentAssocRepository.deleteById(consentAssocId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
