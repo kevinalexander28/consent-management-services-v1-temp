@@ -3,6 +3,7 @@ package com.mdm.consent.controller;
 import com.mdm.consent.dto.ConsentAssocRequest;
 import com.mdm.consent.dto.ConsentRequest;
 import com.mdm.consent.entity.Consent;
+import com.mdm.consent.entity.ConsentAssoc;
 import com.mdm.consent.repository.ConsentAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,14 @@ public class ConsentController {
     private ConsentAssocRepository consentAssocRepository;
 
     @PostMapping("/addConsent")
-    public Consent addConsent(@RequestBody ConsentRequest request){
-        return consentRepository.save(request.getConsent());
+    public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
+        try {
+            Consent _consent = consentRepository
+                    .save(request.getConsent());
+            return new ResponseEntity<>(_consent, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/getConsent")
@@ -83,8 +90,18 @@ public class ConsentController {
         }
     }
 
-    @DeleteMapping("/deleteClause")
-    public ResponseEntity<HttpStatus> deleteClause(@RequestBody ConsentAssocRequest request) {
+    @PostMapping("/addConsentAssoc")
+    public ResponseEntity<List<ConsentAssoc>> addConsentAssoc(@RequestBody ConsentRequest request) {
+        try {
+            List<ConsentAssoc> _consentAssoc = consentAssocRepository.saveAll(request.getConsent().getConsentAssocs());
+            return new ResponseEntity<>(_consentAssoc, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/deleteConsentAssoc")
+    public ResponseEntity<HttpStatus> deleteConsentAssoc(@RequestBody ConsentAssocRequest request) {
         try {
             long consentAssocId = request.getConsentAssoc().getConsentAssocId();
             consentAssocRepository.deleteById(consentAssocId);
