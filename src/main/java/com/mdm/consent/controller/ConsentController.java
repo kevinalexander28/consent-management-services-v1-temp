@@ -11,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +30,8 @@ public class ConsentController {
     @PostMapping("/addConsent")
     public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
         try {
+            Date date = Calendar.getInstance().getTime();
+            request.getConsent().setLastUpdateDt(date);
             Consent _consent = consentRepository
                     .save(request.getConsent());
             return new ResponseEntity<>(_consent, HttpStatus.CREATED);
