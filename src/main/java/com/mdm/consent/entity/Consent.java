@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @AllArgsConstructor
@@ -20,44 +19,45 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Consent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "consentId")
+    @Column(name = "consent_id")
     private long consentId;
 
-    @Column(name = "cifId")
+    @Column(name = "cif_id")
     private String cifId;
 
-    @Column(name = "idType")
+    @Column(name = "id_type")
     private String idType;
 
-    @Column(name = "idNumber")
+    @Column(name = "id_number")
     private String idNumber;
 
-    @Column(name = "clauseRenewalPeriod")
+    @Column(name = "clause_renewal_period")
     private String clauseRenewalPeriod;
 
-    @Column(name = "sourceSystem")
+    @Column(name = "source_system")
     private String sourceSystem;
 
-    @Column(name = "createUser")
+    @Column(name = "created_user")
     private String createdUser;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @Column(name = "createDate")
+    @Column(name = "created_date")
     private Date createdDate;
 
-    @Column(name = "lastUpdateUser")
+    @Column(name = "last_update_user")
     private String lastUpdateUser;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @Column(name = "lastUpdateDate")
+    @Column(name = "last_update_date")
     private Date lastUpdateDate;
 
-    @Column(name = "branchCode")
+    @Column(name = "branch_code")
     private String branchCode;
 
     @OneToMany(targetEntity = ConsentAssoc.class,cascade = CascadeType.ALL)
-    @JoinColumn(name ="consentId",referencedColumnName = "consentId")
+    @JoinColumn(name ="consent_id",referencedColumnName = "consent_id")
+    @ToString.Exclude
     private List<ConsentAssoc> consentAssocs;
 }
