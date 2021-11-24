@@ -2,8 +2,10 @@ package com.mdm.consent.controller;
 
 import com.mdm.consent.dto.ConsentAssocRequest;
 import com.mdm.consent.dto.ConsentRequest;
+import com.mdm.consent.entity.CdConsentTp;
 import com.mdm.consent.entity.Consent;
 import com.mdm.consent.entity.ConsentAssoc;
+import com.mdm.consent.repository.CdConsentTpRepository;
 import com.mdm.consent.repository.ConsentAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ConsentController {
     @Autowired
     private ConsentAssocRepository consentAssocRepository;
 
+    @Autowired
+    private CdConsentTpRepository cdConsentTpRepository;
+
     @PostMapping("/addConsent")
     public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
         try {
@@ -37,12 +42,18 @@ public class ConsentController {
             request.getConsent().setLastUpdateUser(request.getConsent().getCreatedUser());
 
             for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
-                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
-                request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+                long checkClauseCode = request.getConsent().getConsentAssocs().get(i).getClauseCode();
+                Optional<CdConsentTp> cdConsentTpData = cdConsentTpRepository.findById(checkClauseCode);
+                if (cdConsentTpData.isPresent()) {
+                    request.getConsent().getConsentAssocs().get(i).setClauseName(cdConsentTpData.get().getClauseName());
+                    request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
+                    request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
+                    request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
+                    request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
-
             Consent _consent = consentRepository
                     .save(request.getConsent());
             return new ResponseEntity<>(_consent, HttpStatus.CREATED);
@@ -53,11 +64,29 @@ public class ConsentController {
 
     @GetMapping("/getConsent")
     public ResponseEntity<Consent> getConsent(@RequestBody ConsentRequest request){
-        long consentId = request.getConsent().getConsentId();
-        Optional<Consent> consentData = consentRepository.findById(consentId);
 
-        return consentData.map(consent -> new ResponseEntity<>(consent, HttpStatus.OK)).
-                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        try {
+            long consentId = request.getConsent().getConsentId();
+            Optional<Consent> consentData = consentRepository.findById(consentId);
+
+            if (consentData.isPresent()){
+                Consent consent = consentData.get();
+                for (int j = 0; j < consent.getConsentAssocs().size(); j++) {
+                    ConsentAssoc consentAssoc = consent.getConsentAssocs().get(j);
+                    long clauseCode = consentAssoc.getClauseCode();
+                    Optional<CdConsentTp> cdConsentTpData = cdConsentTpRepository.findById(clauseCode);
+                    if (cdConsentTpData.isPresent()) {
+                        String clauseName = cdConsentTpData.get().getClauseName();
+                        consent.getConsentAssocs().get(j).setClauseName(clauseName);
+                    }
+                }
+                return new ResponseEntity<>(consent, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/getAllConsentByCIFId")
@@ -67,6 +96,17 @@ public class ConsentController {
             List<Consent> consents = consentRepository.findByCifId(cifId);
             if (consents.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            for (Consent consent : consents) {
+                for (int j = 0; j < consent.getConsentAssocs().size(); j++) {
+                    ConsentAssoc consentAssoc = consent.getConsentAssocs().get(j);
+                    long clauseCode = consentAssoc.getClauseCode();
+                    Optional<CdConsentTp> cdConsentTpData = cdConsentTpRepository.findById(clauseCode);
+                    if (cdConsentTpData.isPresent()) {
+                        String clauseName = cdConsentTpData.get().getClauseName();
+                        consent.getConsentAssocs().get(j).setClauseName(clauseName);
+                    }
+                }
             }
             return new ResponseEntity<>(consents, HttpStatus.OK);
         } catch (Exception e) {
@@ -122,10 +162,18 @@ public class ConsentController {
             Optional<Consent> consentData = consentRepository.findById(consentId);
 
             for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
-                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
-                request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+                ConsentAssoc consentAssoc = request.getConsent().getConsentAssocs().get(i);
+                long clauseCode = consentAssoc.getClauseCode();
+                Optional<CdConsentTp> cdConsentTpData = cdConsentTpRepository.findById(clauseCode);
+                if (cdConsentTpData.isPresent()) {
+                    request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
+                    request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
+                    request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
+                    request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
 
             if (consentData.isPresent()){
@@ -143,10 +191,11 @@ public class ConsentController {
                 for(int i = 0; i<consentData.get().getConsentAssocs().size(); i++) {
                     request.getConsent().getConsentAssocs().add(consentData.get().getConsentAssocs().get(i));
                 }
+                Consent _consent = consentRepository.save(request.getConsent());
+                return new ResponseEntity<>(_consent, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
-            Consent _consent = consentRepository.save(request.getConsent());
-            return new ResponseEntity<>(_consent, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

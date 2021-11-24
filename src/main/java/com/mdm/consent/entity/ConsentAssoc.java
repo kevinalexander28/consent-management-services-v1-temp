@@ -22,6 +22,9 @@ public class ConsentAssoc {
     @Column(name = "clause_code")
     private long clauseCode;
 
+    @Transient
+    private String clauseName;
+
     @Column(name = "create_user")
     private String createdUser;
 
