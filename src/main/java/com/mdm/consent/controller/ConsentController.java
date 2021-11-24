@@ -35,6 +35,7 @@ public class ConsentController {
             request.getConsent().setLastUpdateDate(date);
 
             request.getConsent().setLastUpdateUser(request.getConsent().getCreatedUser());
+
             for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
                 request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
                 request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
@@ -88,7 +89,7 @@ public class ConsentController {
             _consent.setIdNumber(request.getConsent().getIdNumber());
             _consent.setClauseRenewalPeriod(request.getConsent().getClauseRenewalPeriod());
             _consent.setSourceSystem(request.getConsent().getSourceSystem());
-            //_consent.setCreateDate(request.getConsent().getCreateDate());
+            //_consent.setCreatedDate(request.getConsent().getCreateDate());
             //_consent.setCreatedUser(request.getConsent().getCreatedUser());
             _consent.setLastUpdateUser(request.getConsent().getLastUpdateUser());
             _consent.setLastUpdateDate(date);
@@ -111,10 +112,41 @@ public class ConsentController {
     }
 
     @PostMapping("/addConsentAssoc")
-    public ResponseEntity<List<ConsentAssoc>> addConsentAssoc(@RequestBody ConsentRequest request) {
+    public ResponseEntity<Consent> addConsentAssoc(@RequestBody ConsentRequest request) {
         try {
-            List<ConsentAssoc> _consentAssoc = consentAssocRepository.saveAll(request.getConsent().getConsentAssocs());
-            return new ResponseEntity<>(_consentAssoc, HttpStatus.CREATED);
+            Calendar calendar = Calendar.getInstance();
+            //calendar.setTimeZone(TimeZone.getTimeZone("GMT+7"));
+            Date date = calendar.getTime();
+
+            long consentId = request.getConsent().getConsentId();
+            Optional<Consent> consentData = consentRepository.findById(consentId);
+
+            for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
+                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
+                request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+            }
+
+            if (consentData.isPresent()){
+                request.getConsent().setCifId(consentData.get().getCifId());
+                request.getConsent().setIdType(consentData.get().getIdType());
+                request.getConsent().setIdNumber(consentData.get().getIdNumber());
+                request.getConsent().setClauseRenewalPeriod(consentData.get().getClauseRenewalPeriod());
+                request.getConsent().setSourceSystem(consentData.get().getSourceSystem());
+                request.getConsent().setCreatedDate(consentData.get().getCreatedDate());
+                request.getConsent().setCreatedUser(consentData.get().getCreatedUser());
+                request.getConsent().setLastUpdateUser(consentData.get().getLastUpdateUser());
+                request.getConsent().setLastUpdateDate(consentData.get().getLastUpdateDate());
+                request.getConsent().setBranchCode(consentData.get().getBranchCode());
+
+                for(int i = 0; i<consentData.get().getConsentAssocs().size(); i++) {
+                    request.getConsent().getConsentAssocs().add(consentData.get().getConsentAssocs().get(i));
+                }
+            }
+
+            Consent _consent = consentRepository.save(request.getConsent());
+            return new ResponseEntity<>(_consent, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
