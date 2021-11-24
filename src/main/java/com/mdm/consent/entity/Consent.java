@@ -38,13 +38,13 @@ public class Consent {
     @Column(name = "sourceSystem")
     private String sourceSystem;
 
+    @Column(name = "createUser")
+    private String createdUser;
+
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "createDate")
     private Date createdDate;
-
-    @Column(name = "createUser")
-    private String createdUser;
 
     @Column(name = "lastUpdateUser")
     private String lastUpdateUser;

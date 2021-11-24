@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/consent-management-services-v1")
@@ -30,15 +27,22 @@ public class ConsentController {
     @PostMapping("/addConsent")
     public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
         try {
-            Date date = Calendar.getInstance().getTime();
-            request.getConsent().setCreatedDate(date);
-            request.getConsent().setLastUpdateDate(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getTimeZone("GMT+7"));
+            System.out.println();
+            Date date = calendar.getTime();
+
+            request.getConsent().setCreatedDate(calendar.getTime());
+            request.getConsent().setLastUpdateDate(calendar.getTime());
+
+            request.getConsent().setLastUpdateUser(request.getConsent().getCreatedUser());
             for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
-                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
+                request.getConsent().getConsentAssocs().get(i).setCreatedDate(calendar.getTime());
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(calendar.getTime());
                 request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
                 request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
             }
+
             Consent _consent = consentRepository
                     .save(request.getConsent());
             return new ResponseEntity<>(_consent, HttpStatus.CREATED);
@@ -85,8 +89,8 @@ public class ConsentController {
             _consent.setIdNumber(request.getConsent().getIdNumber());
             _consent.setClauseRenewalPeriod(request.getConsent().getClauseRenewalPeriod());
             _consent.setSourceSystem(request.getConsent().getSourceSystem());
-            // _consent.setCreateDate(request.getConsent().getCreateDate());
-            _consent.setCreatedUser(request.getConsent().getCreatedUser());
+            //_consent.setCreateDate(request.getConsent().getCreateDate());
+            //_consent.setCreatedUser(request.getConsent().getCreatedUser());
             _consent.setLastUpdateUser(request.getConsent().getLastUpdateUser());
             _consent.setLastUpdateDate(date);
             _consent.setBranchCode(request.getConsent().getBranchCode());
