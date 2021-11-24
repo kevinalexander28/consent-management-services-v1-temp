@@ -1,6 +1,5 @@
 package com.mdm.consent.dto;
 
-import com.mdm.consent.entity.Consent;
 import com.mdm.consent.entity.ConsentAssoc;
 import lombok.AllArgsConstructor;
 import lombok.Data;
