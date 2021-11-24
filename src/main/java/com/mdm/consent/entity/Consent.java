@@ -33,23 +33,31 @@ public class Consent {
     private String idNumber;
 
     @Column(name = "clauseRenewalPeriod")
-    private Date clauseRenewalPeriod;
+    private String clauseRenewalPeriod;
 
     @Column(name = "sourceSystem")
     private String sourceSystem;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
+    @Column(name = "createDate")
+    private Date createdDate;
+
+    @Column(name = "createUser")
+    private String createdUser;
 
     @Column(name = "lastUpdateUser")
     private String lastUpdateUser;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
-    @Column(name = "lastUpdateDt")
-    private Date lastUpdateDt;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
+    @Column(name = "lastUpdateDate")
+    private Date lastUpdateDate;
 
     @Column(name = "branchCode")
     private String branchCode;
 
     @OneToMany(targetEntity = ConsentAssoc.class,cascade = CascadeType.ALL)
-    @JoinColumn(name ="consent_id_fk",referencedColumnName = "consentId")
+    @JoinColumn(name ="consentId",referencedColumnName = "consentId")
     private List<ConsentAssoc> consentAssocs;
 }

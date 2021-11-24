@@ -31,7 +31,14 @@ public class ConsentController {
     public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
         try {
             Date date = Calendar.getInstance().getTime();
-            request.getConsent().setLastUpdateDt(date);
+            request.getConsent().setCreatedDate(date);
+            request.getConsent().setLastUpdateDate(date);
+            for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
+                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
+                request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
+            }
             Consent _consent = consentRepository
                     .save(request.getConsent());
             return new ResponseEntity<>(_consent, HttpStatus.CREATED);
@@ -69,6 +76,8 @@ public class ConsentController {
         long consentId = request.getConsent().getConsentId();
         Optional<Consent> consentData = consentRepository.findById(consentId);
 
+        Date date = Calendar.getInstance().getTime();
+
         if (consentData.isPresent()) {
             Consent _consent = consentData.get();
             _consent.setCifId(request.getConsent().getCifId());
@@ -76,8 +85,10 @@ public class ConsentController {
             _consent.setIdNumber(request.getConsent().getIdNumber());
             _consent.setClauseRenewalPeriod(request.getConsent().getClauseRenewalPeriod());
             _consent.setSourceSystem(request.getConsent().getSourceSystem());
+            // _consent.setCreateDate(request.getConsent().getCreateDate());
+            _consent.setCreatedUser(request.getConsent().getCreatedUser());
             _consent.setLastUpdateUser(request.getConsent().getLastUpdateUser());
-            _consent.setLastUpdateDt(request.getConsent().getLastUpdateDt());
+            _consent.setLastUpdateDate(date);
             _consent.setBranchCode(request.getConsent().getBranchCode());
             return new ResponseEntity<>(consentRepository.save(_consent), HttpStatus.OK);
         } else {
