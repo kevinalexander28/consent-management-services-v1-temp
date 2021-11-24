@@ -28,17 +28,16 @@ public class ConsentController {
     public ResponseEntity<Consent> addConsent(@RequestBody ConsentRequest request) {
         try {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(TimeZone.getTimeZone("GMT+7"));
-            System.out.println();
+            //calendar.setTimeZone(TimeZone.getTimeZone("GMT+7"));
             Date date = calendar.getTime();
 
-            request.getConsent().setCreatedDate(calendar.getTime());
-            request.getConsent().setLastUpdateDate(calendar.getTime());
+            request.getConsent().setCreatedDate(date);
+            request.getConsent().setLastUpdateDate(date);
 
             request.getConsent().setLastUpdateUser(request.getConsent().getCreatedUser());
             for(int i = 0; i<request.getConsent().getConsentAssocs().size(); i++) {
-                request.getConsent().getConsentAssocs().get(i).setCreatedDate(calendar.getTime());
-                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(calendar.getTime());
+                request.getConsent().getConsentAssocs().get(i).setCreatedDate(date);
+                request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
                 request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
                 request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
             }
