@@ -11,6 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ConsentRequest {
-
     private Consent consent;
 }

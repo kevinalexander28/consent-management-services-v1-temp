@@ -1,6 +1,6 @@
 package com.mdm.consent.dto;
 
-import com.mdm.consent.entity.CdConsentTp;
+import com.mdm.consent.entity.Consent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CdConsentTpRequest {
-    private List<CdConsentTp> cdConsentTp;
+public class ConsentListResponse {
+    private String status;
+    private List<Consent> consent;
 }

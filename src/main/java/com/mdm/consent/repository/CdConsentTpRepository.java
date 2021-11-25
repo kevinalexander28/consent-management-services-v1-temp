@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CdConsentTpRepository extends JpaRepository<CdConsentTp, Long> {
 
+    // Mencari list of consent dimana clause_code bukan 0
     @Query(value = "SELECT * FROM cdconsenttp where clause_code <> 0", nativeQuery = true)
     List<CdConsentTp> findAllNotZero();
 }

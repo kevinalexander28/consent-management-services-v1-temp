@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CdConsentTpRequest {
+public class CdConsentTpResponse {
+    private String status;
     private List<CdConsentTp> cdConsentTp;
 }
