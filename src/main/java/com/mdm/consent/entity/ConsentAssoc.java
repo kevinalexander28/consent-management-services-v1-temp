@@ -19,25 +19,25 @@ public class ConsentAssoc {
     @Column(name = "consent_assoc_id")
     private long consentAssocId;
 
-    @Column(name = "clause_code")
+    @Column(name = "clause_code", nullable = false)
     private long clauseCode;
 
     @Transient
     private String clauseName;
 
-    @Column(name = "create_user")
+    @Column(name = "create_user", nullable = false)
     private String createdUser;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @Column(name = "create_date")
+    @Column(name = "create_date", nullable = false)
     private Date createdDate;
 
-    @Column(name = "last_update_user")
+    @Column(name = "last_update_user", nullable = false)
     private String lastUpdateUser;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @Column(name = "last_update_date")
+    @Column(name = "last_update_date", nullable = false)
     private Date lastUpdateDate;
 }
