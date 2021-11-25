@@ -1,5 +1,6 @@
 package com.mdm.consent.controller;
 
+import com.mdm.consent.dto.CdConsentTpRequest;
 import com.mdm.consent.dto.ConsentAssocRequest;
 import com.mdm.consent.dto.ConsentRequest;
 import com.mdm.consent.entity.CdConsentTp;
@@ -13,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -170,7 +169,6 @@ public class ConsentController {
                     request.getConsent().getConsentAssocs().get(i).setLastUpdateDate(date);
                     request.getConsent().getConsentAssocs().get(i).setCreatedUser(request.getConsent().getCreatedUser());
                     request.getConsent().getConsentAssocs().get(i).setLastUpdateUser(request.getConsent().getCreatedUser());
-
                 } else {
                     return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -191,6 +189,7 @@ public class ConsentController {
                 for(int i = 0; i<consentData.get().getConsentAssocs().size(); i++) {
                     request.getConsent().getConsentAssocs().add(consentData.get().getConsentAssocs().get(i));
                 }
+
                 Consent _consent = consentRepository.save(request.getConsent());
                 return new ResponseEntity<>(_consent, HttpStatus.CREATED);
             } else {
@@ -207,6 +206,26 @@ public class ConsentController {
             long consentAssocId = request.getConsentAssoc().getConsentAssocId();
             consentAssocRepository.deleteById(consentAssocId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getListConsent")
+    public ResponseEntity<List<CdConsentTp>> getListConsent() {
+        try {
+            List<CdConsentTp> cdConsentTps = cdConsentTpRepository.findAllNotZero();
+            return new ResponseEntity<>(cdConsentTps, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/addListConsent")
+    public ResponseEntity<CdConsentTp> addListConsent(@RequestBody CdConsentTpRequest request) {
+        try {
+            CdConsentTp _cdConsentTp = cdConsentTpRepository.save(request.getCdConsentTp());
+            return new ResponseEntity<>(_cdConsentTp, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
