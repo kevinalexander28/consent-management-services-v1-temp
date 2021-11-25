@@ -296,7 +296,7 @@ public class ConsentController {
         }
     }
 
-    @PostMapping("/addListOfConsent")
+    @PostMapping("/saveListOfConsent")
     public ResponseEntity<CdConsentTpResponse> addListOfConsent(@RequestBody CdConsentTpRequest request) {
         CdConsentTpResponse cdConsentTpResponse = new CdConsentTpResponse();
         try {
