@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -49,70 +50,76 @@ public class Consent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("ConsentId")
-    @Column(name = "CONSENT_ID")
+    @Column(name = "consent_id")
     private long consentId;
 
     @JsonProperty("CIF")
-    @Column(name = "CIF_ID", nullable = false)
+    @Column(name = "cif_id", nullable = false)
     private String cifId;
 
     @JsonProperty("IdType")
-    @Column(name = "ID_TYPE", nullable = false)
+    @Column(name = "id_type", nullable = false)
     private String idType;
 
     @JsonProperty("IdNumber")
-    @Column(name = "ID_NUMBER", nullable = false)
+    @Column(name = "id_number", nullable = false)
     private String idNumber;
 
     @JsonProperty("TenantType")
-    @Column(name = "TENANT_TP_CD", nullable = false)
+    @Column(name = "tenant_tp_cd", nullable = false)
     private long tenantType;
 
     @JsonProperty("ProcPurpId")
-    @Column(name = "PROC_PURP_ID", nullable = false)
+    @Column(name = "proc_purp_id", nullable = false)
     private long procPurpId;
 
     @JsonProperty("AgreeInd")
-    @Column(name = "AGREE_IND", nullable = false)
+    @Column(name = "agree_ind", nullable = false)
     private long agreeInd;
 
     @JsonProperty("ConsentGiverId")
-    @Column(name = "CONSENT_GIVER_ID", nullable = false)
+    @Column(name = "consent_giver_id", nullable = false)
     private String consentGiverId;
 
     @JsonProperty("BranchCode")
-    @Column(name = "BRANCH_CODE", nullable = false)
+    @Column(name = "branch_code", nullable = false)
     private String branchCode;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("CreateDate")
-    @Column(name = "CREATE_DATE", nullable = false)
+    @Column(name = "create_date", nullable = false)
     private Date createDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("StartDate")
-    @Column(name = "START_DT", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("EndDate")
-    @Column(name = "END_DT", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private Date endDate;
 
     @JsonProperty("EndReasonType")
-    @Column(name = "END_REASON_TP_CD")
+    @Column(name = "end_reason_tp_cd")
     private Long endReasonType;
 
     @JsonProperty("LastUpdateUser")
-    @Column(name = "LAST_UPDATE_USER", nullable = false)
+    @Column(name = "last_update_user", nullable = false)
     private String lastUpdateUser;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("LastUpdateDate")
-    @Column(name = "LAST_UPDATE_DT", nullable = false)
+    @Column(name = "last_update_date", nullable = false)
     private Date lastUpdateDate;
+
+    @OneToMany(targetEntity = ConsentEntityAssoc.class,cascade = CascadeType.ALL)
+    @JoinColumn(name ="consent_id",referencedColumnName = "consent_id")
+    @JsonProperty("ConsentEntityAssocs")
+    @ToString.Exclude
+    private List<ConsentEntityAssoc> consentEntityAssocs;
 }

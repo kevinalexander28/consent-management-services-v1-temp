@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdm.consent.entity.Consent;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ConsentResponse {
+public class ConsentListResponse {
     /*
     @JsonProperty -> change the name of a field to map to another JSON property
     */
@@ -21,5 +23,5 @@ public class ConsentResponse {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("Consent")
-    private Consent consent;
+    private List<Consent> consent;
 }
