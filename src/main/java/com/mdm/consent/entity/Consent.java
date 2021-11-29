@@ -1,6 +1,7 @@
 package com.mdm.consent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -14,14 +15,16 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name = "CONSENT")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Consent {
-
-    //@Id -> declare primary key
-    //@GeneratedValue -> generate value of the field
-    //@JsonProperty -> change the name of a field to map to another JSON property
-    //@Column -> specify the mapped column for a persistent property or field
-    //@JsonFormat -> specify how to format fields and/or properties for JSON output
-    //@Temporal -> indicate a specific mapping of java.util.Date or java.util.Calendar
+    /*
+    @Id -> declare primary key
+    @GeneratedValue -> generate value of the field
+    @JsonProperty -> change the name of a field to map to another JSON property
+    @Column -> specify the mapped column for a persistent property or field
+    @JsonFormat -> specify how to format fields and/or properties for JSON output
+    @Temporal -> indicate a specific mapping of java.util.Date or java.util.Calendar
+    */
 
     /*
     CREATE TABLE CONSENT (
@@ -101,7 +104,7 @@ public class Consent {
 
     @JsonProperty("EndReasonType")
     @Column(name = "END_REASON_TP_CD")
-    private long endReason;
+    private Long endReasonType;
 
     @JsonProperty("LastUpdateUser")
     @Column(name = "LAST_UPDATE_USER", nullable = false)

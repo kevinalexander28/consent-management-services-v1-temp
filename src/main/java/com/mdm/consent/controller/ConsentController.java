@@ -7,10 +7,7 @@ import com.mdm.consent.repository.ConsentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,13 +26,13 @@ public class ConsentController {
 
         try{
             // TODO: Validation (if needed)
-            // Check IdType - exists in the List of ID Types
-            // Check TenantType - exists in the List of Tenant Types
-            // Check ProcPurpId - exists in the List of Processing Purpose IDs
-            // Check AgreeInd - exists in the List of Agree Indicators
-            // Check EndReasonType - exists in the List of End Reason Types
+            // Check if IdType exists in the List of ID Types
+            // Check if TenantType exists in the List of Tenant Types
+            // Check if ProcPurpId exists in the List of Processing Purpose IDs
+            // Check if AgreeInd exists in the List of Agree Indicators
+            // Check if EndReasonType exists in the List of End Reason Types
 
-            // Check ConsentId - exists in CONSENT table
+            // Check if ConsentId exists in CONSENT table
             long consentId = request.getConsent().getConsentId();
             Optional<Consent> existingConsent = consentRepository.findById(consentId);
 
@@ -58,7 +55,7 @@ public class ConsentController {
                 consent.setProcPurpId(request.getConsent().getProcPurpId());
                 consent.setAgreeInd(request.getConsent().getAgreeInd());
                 consent.setBranchCode(request.getConsent().getBranchCode());
-                consent.setEndReason(request.getConsent().getEndReason());
+                consent.setEndReasonType(request.getConsent().getEndReasonType());
                 consent.setLastUpdateUser(request.getConsent().getConsentGiverId());
 
                 // Set LastUpdateDate to Current Date
@@ -83,6 +80,10 @@ public class ConsentController {
                 // Set LastUpdateUser with the same value as CreateUser only when Add New Consent (First Time)
                 String consentGiver = request.getConsent().getConsentGiverId();
                 consent.setLastUpdateUser(consentGiver);
+
+                // Set Null
+                consent.setEndReasonType(null);
+
                 // Save Consent
                 consentRepository.save(consent);
                 // Set status to Created
@@ -97,6 +98,63 @@ public class ConsentController {
             // Response Mapping for Internal Server Error
             consentResponse.setStatus("INTERNAL SERVER ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getConsent")
+    public ResponseEntity<ConsentResponse> getConsent(@RequestBody ConsentRequest request) {
+        ConsentResponse consentResponse = new ConsentResponse();
+        try {
+            // Check if ConsentId exists in CONSENT table
+            long consentId = request.getConsent().getConsentId();
+            Optional<Consent> consentData = consentRepository.findById(consentId);
+
+            if (consentData.isPresent()){
+                Consent consent = consentData.get();
+
+                // TODO (if needed)
+                // Join Table
+
+                // Response Mapping
+                consentResponse.setConsent(consent);
+                consentResponse.setStatus("SUCCESS");
+                return new ResponseEntity<>(consentResponse, HttpStatus.OK);
+            } else {
+                // Response Mapping for Data Not Found
+                consentResponse.setStatus("DATA NOT FOUND");
+                return new ResponseEntity<>(consentResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            // Response Mapping for Internal Server Error
+            consentResponse.setStatus("INTERNAL SERVER ERROR");
+            return new ResponseEntity<>(consentResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/deleteConsent")
+    public ResponseEntity<ConsentResponse> deleteConsent(@RequestBody ConsentRequest request) {
+        ConsentResponse consentResponse = new ConsentResponse();
+        try {
+            // Get consent_id
+            long consentId = request.getConsent().getConsentId();
+
+            // Check if ConsentId exists in CONSENT table
+            if (!consentRepository.existsById(consentId)) {
+                // Response Mapping for Data Not Found
+                consentResponse.setStatus("ConsentId is not exists");
+                return new ResponseEntity<>(consentResponse, HttpStatus.NOT_FOUND);
+            }
+
+            // Delete consent by ConsentId
+            consentRepository.deleteById(consentId);
+
+            // Response Mapping
+            consentResponse.setStatus("SUCCESS");
+            return new ResponseEntity<>(consentResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            // Response Mapping for Internal Server Error
+            consentResponse.setStatus("INTERNAL SERVER ERROR");
+            return new ResponseEntity<>(consentResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

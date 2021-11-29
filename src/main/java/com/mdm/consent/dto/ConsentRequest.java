@@ -10,6 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class ConsentRequest {
+    /*
+    @JsonProperty -> change the name of a field to map to another JSON property
+    */
+
     @JsonProperty("Consent")
     private Consent consent;
 }
