@@ -102,7 +102,7 @@ public class ConsentController {
             // Set status to Created
             consentResponse.setStatus("Created");
             // Response Mapping
-            consentResponse.setConsent(consent);
+            // consentResponse.setConsent(consent);
             return new ResponseEntity<>(consentResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
@@ -172,7 +172,7 @@ public class ConsentController {
             // Set status to Updated
             consentResponse.setStatus("Updated");
             // Response Mapping
-            consentResponse.setConsent(consent);
+            // consentResponse.setConsent(consent);
             return new ResponseEntity<>(consentResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
@@ -321,7 +321,7 @@ public class ConsentController {
                         consent.getConsentEntityAssocs().get(i).setClauseName(clauseName);
                     }
                 }
-                consentResponse.setConsent(consent);
+                // consentResponse.setConsent(consent);
             } else {
                 // Response Mapping for Data Not Found
                 consentResponse.setStatus("Data Not Found");
@@ -365,7 +365,7 @@ public class ConsentController {
             Clause clauses = clauseRepository.save(request.getClause());
 
             clauseResponse.setStatus("Created");
-            clauseResponse.setClause(clauses);
+            // clauseResponse.setClause(clauses);
             return new ResponseEntity<>(clauseResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
