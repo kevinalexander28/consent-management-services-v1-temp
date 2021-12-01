@@ -326,6 +326,13 @@ public class ConsentController {
         try{
             // TODO: Validation (if needed)
 
+            // Get Current Date
+            Calendar calendar = Calendar.getInstance();
+            Date currentDate = calendar.getTime();
+
+            // Set CreateDate to Current Date
+            request.getClause().setCreateDate(currentDate);
+
             // Get list of clauses
             Clause clauses = clauseRepository.save(request.getClause());
 
