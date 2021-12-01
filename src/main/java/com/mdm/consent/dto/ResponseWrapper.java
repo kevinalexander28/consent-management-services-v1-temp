@@ -3,6 +3,8 @@ package com.mdm.consent.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,5 +16,11 @@ public class ResponseWrapper {
     */
 
     @JsonProperty("Status")
-    private String status;
+    private int status;
+
+    @JsonProperty("Error")
+    private String error;
+
+    @JsonProperty("ErrorMessage")
+    private List<String> errorMessage;
 }

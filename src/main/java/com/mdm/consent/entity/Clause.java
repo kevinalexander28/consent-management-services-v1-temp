@@ -1,6 +1,7 @@
 package com.mdm.consent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -49,6 +50,10 @@ public class Clause {
     @Column(name = "clause_name", nullable = false)
     @Length(min = 3)
     private String clauseName;
+
+    @JsonProperty("ClauseRenewalPeriod")
+    @Column(name = "clause_renewal_period", nullable = false)
+    private int clauseRenewalPeriod;
 
     @JsonProperty("CreateUser")
     @Column(name = "create_user", nullable = false)

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class Consent {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("EndDate")
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     private Date endDate;
 
     @JsonProperty("EndReasonType")

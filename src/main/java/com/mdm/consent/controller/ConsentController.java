@@ -6,8 +6,12 @@ import com.mdm.consent.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -24,15 +28,25 @@ public class ConsentController {
     private ClauseRepository clauseRepository;
 
     @PostMapping("/addConsent")
-    public ResponseEntity<ResponseWrapper> addConsent(@RequestBody AddConsentRequestWrapper request) {
+    public ResponseEntity<ResponseWrapper> addConsent(@Valid @RequestBody AddConsentRequestWrapper request, Errors errors) {
+
         ResponseWrapper responseWrapper = new ResponseWrapper();
 
-        try{
-            // TODO: Validation (if needed)
+        if (errors.hasErrors()) {
+            List<String> errMessages = new ArrayList<>();
+            for (int i=0; i<errors.getErrorCount(); i++) {
+                errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
+            }
+            String strErrMessages = String.join("\r\n", errMessages);
+            responseWrapper.setErrorMessage(errMessages);
+            responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
+        }
 
+        try{
             // Get Current Date
-            Calendar calendar = Calendar.getInstance();
-            Date currentDate = calendar.getTime();
+            Calendar now = Calendar.getInstance();
+            Date currentDate = now.getTime();
 
             // Declare Consent
             Consent consent = new Consent();
@@ -47,15 +61,11 @@ public class ConsentController {
             consent.setConsentGiverId(request.getConsent().getConsentGiverId());
             consent.setBranchCode(request.getConsent().getBranchCode());
 
-            // Set CreateDate and LastUpdateDate to Current Date
+            // Set CreateDate, StartDate, and LastUpdateDate to Current Date
             consent.setCreateDate(currentDate);
             consent.setStartDate(currentDate);
             consent.setLastUpdateDate(currentDate);
-
-            // Set EndDate to 5 years from Start Date
-            calendar.add(Calendar.YEAR, 5);
-            Date renewalDate = calendar.getTime();
-            consent.setEndDate(renewalDate);
+            consent.setEndDate(null);
 
             // Set LastUpdateUser with the same value as CreateUser only when Add New Consent (First Time)
             consent.setLastUpdateUser(request.getConsent().getConsentGiverId());
@@ -66,14 +76,22 @@ public class ConsentController {
 
                 // Check if ClauseCode exists in CLAUSE table
                 long clauseCode = request.getConsent().getConsentEntityAssocs().get(i).getClauseCode();
-                boolean isClauseCodeExists = clauseRepository.existsById(clauseCode);
-                if (isClauseCodeExists){
+                Optional<Clause> clause = clauseRepository.findById(clauseCode);
+                if (clause.isPresent()){
+                    // Set EndDate to 5 years from Start Date
+                    Calendar renewed = Calendar.getInstance();
+                    renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
+                    Date renewalDate = renewed.getTime();
+
                     ConsentEntityAssoc consentEntityAssoc = new ConsentEntityAssoc();
                     // Set ClauseCode
                     consentEntityAssoc.setClauseCode(request.getConsent().getConsentEntityAssocs().get(i).getClauseCode());
 
-                    // Set CreateDate and LastUpdateDate to Current Date
+                    // Set CreateDate to Current Date
                     consentEntityAssoc.setCreateDate(currentDate);
+
+                    // Set EndDate to Renewal Date
+                    consentEntityAssoc.setEndDate(renewalDate);
 
                     // Set CreateUser with the same value as ConsentGiverId
                     consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
@@ -81,7 +99,7 @@ public class ConsentController {
                     consentEntityAssocs.add(consentEntityAssoc);
                 } else {
                     // Response Mapping for ClauseCode Not Found
-                    responseWrapper.setStatus("ClauseCode" + clauseCode + "Not Found");
+                    responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                     return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
@@ -90,11 +108,13 @@ public class ConsentController {
             // Save Consent
             consentRepository.save(consent);
             // Response Mapping
-            responseWrapper.setStatus("Created");
+            responseWrapper.setStatus(HttpStatus.CREATED.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
-            responseWrapper.setStatus("Internal Server Error");
+            System.out.println("==============");
+            System.out.println(e.getMessage());
+            responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -112,8 +132,8 @@ public class ConsentController {
 
             if (existingConsent.isPresent()) {
                 // Get Current Date
-                Calendar calendar = Calendar.getInstance();
-                Date currentDate = calendar.getTime();
+                Calendar now = Calendar.getInstance();
+                Date currentDate = now.getTime();
 
                 // Set New Values
                 existingConsent.get().setCifId(request.getCifId());
@@ -133,17 +153,17 @@ public class ConsentController {
                 consentRepository.save(existingConsent.get());
             } else {
                 // Set status to not found
-                responseWrapper.setStatus("Data Not Found");
+                responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
             }
             // Set status to Updated
-            responseWrapper.setStatus("Updated");
+            responseWrapper.setStatus(HttpStatus.CREATED.value());
             // Response Mapping
             // consentResponse.setConsent(consent);
             return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
-            responseWrapper.setStatus("Internal Server Error");
+            responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -261,8 +281,8 @@ public class ConsentController {
         ConsentResponse consentResponse = new ConsentResponse();
         try {
             // Get Current Date
-            Calendar calendar = Calendar.getInstance();
-            Date date = calendar.getTime();
+            Calendar now = Calendar.getInstance();
+            Date date = now.getTime();
 
             // Check if ConsentId exists in CONSENT table
             Optional<Consent> consentData = consentRepository.findById(request.getConsent().getConsentId());
@@ -327,8 +347,8 @@ public class ConsentController {
             // TODO: Validation (if needed)
 
             // Get Current Date
-            Calendar calendar = Calendar.getInstance();
-            Date currentDate = calendar.getTime();
+            Calendar now = Calendar.getInstance();
+            Date currentDate = now.getTime();
 
             // Set CreateDate to Current Date
             request.getClause().setCreateDate(currentDate);

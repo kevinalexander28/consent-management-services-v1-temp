@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -16,7 +18,8 @@ import javax.validation.constraints.NotEmpty;
 @ToString
 public class AddConsentRequestWrapper {
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "Consent can't be Null")
+    @Valid
     @JsonProperty("Consent")
     private AddConsentRequest consent;
 }

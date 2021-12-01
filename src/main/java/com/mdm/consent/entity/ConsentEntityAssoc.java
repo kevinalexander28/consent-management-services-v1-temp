@@ -61,7 +61,14 @@ public class ConsentEntityAssoc {
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @JsonProperty("CreateDate")
-    @Column(name = "create_date", nullable = false)
+    @JsonProperty("StartDate")
+    @Column(name = "start_date", nullable = false)
     private Date createDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
+    @JsonProperty("EndDate")
+    @Column(name = "end_date", nullable = false)
+    private Date endDate;
 }
+

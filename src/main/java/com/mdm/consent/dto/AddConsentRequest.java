@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -17,39 +19,38 @@ import java.util.List;
 @ToString
 public class AddConsentRequest {
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "CIF can't be Blank")
     @JsonProperty("CIF")
     private String cifId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "IdType can't be Blank")
     @JsonProperty("IdType")
     private String idType;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "IdNumber can't be Blank")
     @JsonProperty("IdNumber")
     private String idNumber;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "TenantType can't be Null")
     @JsonProperty("TenantType")
-    private long tenantType;
+    private Long tenantType;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "ProcPurpId can't be Null")
     @JsonProperty("ProcPurpId")
-    private long procPurpId;
+    private Long procPurpId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "AgreeInd can't be Null")
     @JsonProperty("AgreeInd")
-    private long agreeInd;
+    private Long agreeInd;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "ConsentGiverId can't be Blank")
     @JsonProperty("ConsentGiverId")
     private String consentGiverId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "BranchCode can't be Blank")
     @JsonProperty("BranchCode")
     private String branchCode;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
     @JsonProperty("ConsentEntityAssocs")
     @ToString.Exclude
     private List<ConsentEntityAssocDto> consentEntityAssocs;
