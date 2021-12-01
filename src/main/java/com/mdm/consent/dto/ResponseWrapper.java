@@ -1,7 +1,6 @@
 package com.mdm.consent.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mdm.consent.entity.Clause;
 import lombok.*;
 
 @Getter
@@ -9,11 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ClauseRequest {
+public class ResponseWrapper {
     /*
     @JsonProperty -> change the name of a field to map to another JSON property
     */
 
-    @JsonProperty("Clause")
-    private Clause clause;
+    @JsonProperty("Status")
+    private String status;
 }

@@ -1,21 +1,14 @@
 package com.mdm.consent.controller;
 
 import com.mdm.consent.dto.*;
-import com.mdm.consent.entity.Clause;
-import com.mdm.consent.entity.Consent;
-import com.mdm.consent.entity.ConsentEntityAssoc;
-import com.mdm.consent.repository.ClauseRepository;
-import com.mdm.consent.repository.ConsentEntityAssocRepository;
-import com.mdm.consent.repository.ConsentRepository;
+import com.mdm.consent.entity.*;
+import com.mdm.consent.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/consent-management-services-v1")
@@ -31,20 +24,11 @@ public class ConsentController {
     private ClauseRepository clauseRepository;
 
     @PostMapping("/addConsent")
-    public ResponseEntity<ConsentResponse> addConsent(@RequestBody ConsentRequest request) {
-        ConsentResponse consentResponse = new ConsentResponse();
+    public ResponseEntity<ResponseWrapper> addConsent(@RequestBody AddConsentRequestWrapper request) {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
 
         try{
             // TODO: Validation (if needed)
-            // Check if IdType exists in the List of ID Types
-            // Check if TenantType exists in the List of Tenant Types
-            // Check if ProcPurpId exists in the List of Processing Purpose IDs
-            // Check if AgreeInd exists in the List of Agree Indicators
-            // Check if EndReasonType exists in the List of End Reason Types
-
-            // Check if ConsentId exists in CONSENT table
-            long consentId = request.getConsent().getConsentId();
-            Optional<Consent> existingConsent = consentRepository.findById(consentId);
 
             // Get Current Date
             Calendar calendar = Calendar.getInstance();
@@ -53,131 +37,114 @@ public class ConsentController {
             // Declare Consent
             Consent consent = new Consent();
 
-            if (existingConsent.isEmpty()) {
-                // Get new consent
-                consent = request.getConsent();
+            // Set Values
+            consent.setCifId(request.getConsent().getCifId());
+            consent.setIdType(request.getConsent().getIdType());
+            consent.setIdNumber(request.getConsent().getIdNumber());
+            consent.setTenantType(request.getConsent().getTenantType());
+            consent.setProcPurpId(request.getConsent().getProcPurpId());
+            consent.setAgreeInd(request.getConsent().getAgreeInd());
+            consent.setConsentGiverId(request.getConsent().getConsentGiverId());
+            consent.setBranchCode(request.getConsent().getBranchCode());
 
-                // Set CreateDate and LastUpdateDate to Current Date
-                consent.setCreateDate(currentDate);
-                consent.setLastUpdateDate(currentDate);
-                consent.setStartDate(currentDate);
+            // Set CreateDate and LastUpdateDate to Current Date
+            consent.setCreateDate(currentDate);
+            consent.setStartDate(currentDate);
+            consent.setLastUpdateDate(currentDate);
 
-                // Set EndDate to 5 years from Start Date
-                calendar.add(Calendar.YEAR, 5);
-                Date renewalDate = calendar.getTime();
-                consent.setEndDate(renewalDate);
+            // Set EndDate to 5 years from Start Date
+            calendar.add(Calendar.YEAR, 5);
+            Date renewalDate = calendar.getTime();
+            consent.setEndDate(renewalDate);
 
-                // Set LastUpdateUser with the same value as CreateUser only when Add New Consent (First Time)
-                String consentGiver = request.getConsent().getConsentGiverId();
-                consent.setLastUpdateUser(consentGiver);
+            // Set LastUpdateUser with the same value as CreateUser only when Add New Consent (First Time)
+            consent.setLastUpdateUser(request.getConsent().getConsentGiverId());
 
-                // Set Null
-                consent.setEndReasonType(null);
+            List<ConsentEntityAssoc> consentEntityAssocs = new ArrayList<ConsentEntityAssoc>();
+            // Set ConsentEntityAssoc
+            for (int i=0; i<request.getConsent().getConsentEntityAssocs().size(); i++){
 
-                // Set ConsentEntityAssoc
-                for (int i=0; i<consent.getConsentEntityAssocs().size(); i++){
+                // Check if ClauseCode exists in CLAUSE table
+                long clauseCode = request.getConsent().getConsentEntityAssocs().get(i).getClauseCode();
+                boolean isClauseCodeExists = clauseRepository.existsById(clauseCode);
+                if (isClauseCodeExists){
+                    ConsentEntityAssoc consentEntityAssoc = new ConsentEntityAssoc();
+                    // Set ClauseCode
+                    consentEntityAssoc.setClauseCode(request.getConsent().getConsentEntityAssocs().get(i).getClauseCode());
+
                     // Set CreateDate and LastUpdateDate to Current Date
-                    consent.getConsentEntityAssocs().get(i).setCreateDate(currentDate);
-                    consent.getConsentEntityAssocs().get(i).setLastUpdateDate(currentDate);
+                    consentEntityAssoc.setCreateDate(currentDate);
 
-                    // Set CreateUser and LastUpdateUser with the same value as ConsentGiverId
-                    consent.getConsentEntityAssocs().get(i).setCreateUser(consentGiver);
-                    consent.getConsentEntityAssocs().get(i).setLastUpdateUser(consentGiver);
-
-                    // Check if ClauseCode exists in CLAUSE table
-                    long clauseCode = consent.getConsentEntityAssocs().get(i).getClauseCode();
-                    Optional<Clause> clauseData = clauseRepository.findById(clauseCode);
-                    if (clauseData.isPresent()){
-                        consent.getConsentEntityAssocs().get(i).setClauseName(clauseData.get().getClauseName());
-                    }
+                    // Set CreateUser with the same value as ConsentGiverId
+                    consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
+                    // Add ConsentEntityAssoc to List of ConsentEntityAssoc
+                    consentEntityAssocs.add(consentEntityAssoc);
+                } else {
+                    // Response Mapping for ClauseCode Not Found
+                    responseWrapper.setStatus("ClauseCode" + clauseCode + "Not Found");
+                    return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-
-                // Save Consent
-                consentRepository.save(consent);
-            } else {
-                // Set status to Invalid Body Request
-                consentResponse.setStatus("Invalid Body Request");
-                return new ResponseEntity<>(consentResponse, HttpStatus.BAD_REQUEST);
             }
-            // Set status to Created
-            consentResponse.setStatus("Created");
+            // Add List of ConsentEntityAssoc to Consent
+            consent.setConsentEntityAssocs(consentEntityAssocs);
+            // Save Consent
+            consentRepository.save(consent);
             // Response Mapping
-            // consentResponse.setConsent(consent);
-            return new ResponseEntity<>(consentResponse, HttpStatus.CREATED);
+            responseWrapper.setStatus("Created");
+            return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
-            consentResponse.setStatus("Internal Server Error");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseWrapper.setStatus("Internal Server Error");
+            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/updateConsent")
-    public ResponseEntity<ConsentResponse> updateConsent(@RequestBody ConsentRequest request) {
-        ConsentResponse consentResponse = new ConsentResponse();
+    public ResponseEntity<ResponseWrapper> updateConsent(@RequestBody UpdateConsentRequest request) {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
 
         try{
             // TODO: Validation (if needed)
-            // Check if IdType exists in the List of ID Types
-            // Check if TenantType exists in the List of Tenant Types
-            // Check if ProcPurpId exists in the List of Processing Purpose IDs
-            // Check if AgreeInd exists in the List of Agree Indicators
-            // Check if EndReasonType exists in the List of End Reason Types
 
             // Check if ConsentId exists in CONSENT table
-            long consentId = request.getConsent().getConsentId();
+            long consentId = request.getConsentId();
             Optional<Consent> existingConsent = consentRepository.findById(consentId);
 
-            // Get Current Date
-            Calendar calendar = Calendar.getInstance();
-            Date currentDate = calendar.getTime();
-
-            // Declare Consent
-            Consent consent = new Consent();
-
             if (existingConsent.isPresent()) {
-                // Get existing consent
-                consent = existingConsent.get();
+                // Get Current Date
+                Calendar calendar = Calendar.getInstance();
+                Date currentDate = calendar.getTime();
 
                 // Set New Values
-                consent.setCifId(request.getConsent().getCifId());
-                consent.setIdType(request.getConsent().getIdType());
-                consent.setIdNumber(request.getConsent().getIdNumber());
-                consent.setTenantType(request.getConsent().getTenantType());
-                consent.setProcPurpId(request.getConsent().getProcPurpId());
-                consent.setAgreeInd(request.getConsent().getAgreeInd());
-                consent.setBranchCode(request.getConsent().getBranchCode());
-                consent.setEndReasonType(request.getConsent().getEndReasonType());
-                consent.setLastUpdateUser(request.getConsent().getConsentGiverId());
+                existingConsent.get().setCifId(request.getCifId());
+                existingConsent.get().setIdType(request.getIdType());
+                existingConsent.get().setIdNumber(request.getIdNumber());
+                existingConsent.get().setTenantType(request.getTenantType());
+                existingConsent.get().setProcPurpId(request.getProcPurpId());
+                existingConsent.get().setAgreeInd(request.getAgreeInd());
+                existingConsent.get().setBranchCode(request.getBranchCode());
+                existingConsent.get().setEndReasonType(request.getEndReasonType());
+                existingConsent.get().setLastUpdateUser(request.getConsentGiverId());
 
                 // Set LastUpdateDate to Current Date
-                consent.setLastUpdateDate(currentDate);
-
-                // Get ClauseName for every ConsentEntityAssoc
-                for(int i=0; i<consent.getConsentEntityAssocs().size(); i++){
-                    // Check if ClauseCode exists in CLAUSE table
-                    long clauseCode = consent.getConsentEntityAssocs().get(i).getClauseCode();
-                    Optional<Clause> clauseData = clauseRepository.findById(clauseCode);
-                    if (clauseData.isPresent()){
-                        consent.getConsentEntityAssocs().get(i).setClauseName(clauseData.get().getClauseName());
-                    }
-                }
+                existingConsent.get().setLastUpdateDate(currentDate);
 
                 // Save Consent
-                consentRepository.save(consent);
+                consentRepository.save(existingConsent.get());
             } else {
                 // Set status to not found
-                consentResponse.setStatus("ConsentId Not Found");
-                return new ResponseEntity<>(consentResponse, HttpStatus.NOT_FOUND);
+                responseWrapper.setStatus("Data Not Found");
+                return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
             }
             // Set status to Updated
-            consentResponse.setStatus("Updated");
+            responseWrapper.setStatus("Updated");
             // Response Mapping
             // consentResponse.setConsent(consent);
-            return new ResponseEntity<>(consentResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
-            consentResponse.setStatus("Internal Server Error");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseWrapper.setStatus("Internal Server Error");
+            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -303,9 +270,7 @@ public class ConsentController {
             if (consentData.isPresent()) {
                 for(int i = 0; i<request.getConsent().getConsentEntityAssocs().size(); i++) {
                     request.getConsent().getConsentEntityAssocs().get(i).setCreateDate(date);
-                    request.getConsent().getConsentEntityAssocs().get(i).setLastUpdateDate(date);
                     request.getConsent().getConsentEntityAssocs().get(i).setCreateUser(request.getConsent().getConsentGiverId());
-                    request.getConsent().getConsentEntityAssocs().get(i).setLastUpdateUser(request.getConsent().getConsentGiverId());
                 }
 
                 // Add new ConsentEntityAssocs to existing consent

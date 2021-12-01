@@ -64,14 +64,4 @@ public class ConsentEntityAssoc {
     @JsonProperty("CreateDate")
     @Column(name = "create_date", nullable = false)
     private Date createDate;
-
-    @JsonProperty("LastUpdateUser")
-    @Column(name = "last_update_user", nullable = false)
-    private String lastUpdateUser;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    @JsonProperty("LastUpdateDate")
-    @Column(name = "last_update_date", nullable = false)
-    private Date lastUpdateDate;
 }
