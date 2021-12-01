@@ -3,6 +3,7 @@ package com.mdm.consent.controller;
 import com.mdm.consent.dto.*;
 import com.mdm.consent.entity.*;
 import com.mdm.consent.repository.*;
+import com.mdm.consent.util.ConstraintValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,11 @@ public class ConsentController {
 
         ResponseWrapper responseWrapper = new ResponseWrapper();
 
-        if (errors.hasErrors()) {
-            List<String> errMessages = new ArrayList<>();
-            for (int i=0; i<errors.getErrorCount(); i++) {
-                errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
-            }
-            String strErrMessages = String.join("\r\n", errMessages);
+        ConstraintValidator constraintValidator = new ConstraintValidator();
+
+        List<String> errMessages = constraintValidator.checkError(errors);
+
+        if (errMessages.isEmpty()) {
             responseWrapper.setErrorMessage(errMessages);
             responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
