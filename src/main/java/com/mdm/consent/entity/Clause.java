@@ -18,23 +18,6 @@ import java.util.Date;
 @Table(name = "CLAUSE")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Clause {
-    /*
-    @Id -> declare primary key
-    @GeneratedValue -> generate value of the field
-    @JsonProperty -> change the name of a field to map to another JSON property
-    @Column -> specify the mapped column for a persistent property or field
-    @JsonFormat -> specify how to format fields and/or properties for JSON output
-    @Temporal -> indicate a specific mapping of java.util.Date or java.util.Calendar
-    */
-
-    /*
-    CREATE TABLE CLAUSE (
-        CLAUSE_CODE BIGINT NOT NULL,
-        CLAUSE_CATEGORY VARCHAR(255) NOT NULL,
-        CLAUSE_NAME VARCHAR(255) NOT NULL,
-        PRIMARY KEY (CLAUSE_CODE)
-    )
-    */
 
     @Id
     @JsonProperty("ClauseCode")

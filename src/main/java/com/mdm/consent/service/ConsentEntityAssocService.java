@@ -8,6 +8,8 @@ import com.mdm.consent.entity.ConsentEntityAssoc;
 import com.mdm.consent.repository.ClauseRepository;
 import com.mdm.consent.repository.ConsentEntityAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ import java.util.*;
 
 @Service
 public class ConsentEntityAssocService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClauseService.class);
+
     @Autowired
     private ConsentRepository consentRepository;
 
@@ -28,84 +33,70 @@ public class ConsentEntityAssocService {
 
         List<String> errMessages = new ArrayList<>();
 
-        // Get Current Date
         Calendar now = Calendar.getInstance();
         Date currentDate = now.getTime();
 
-        // Check if ConsentId exists in CONSENT table
         long consentId = request.getConsent().getConsentId();
+        logger.debug("Find Consent where ConsentId = {}", consentId);
         Optional<Consent> consentData = consentRepository.findById(consentId);
 
+        logger.debug("consentData isPresent = {}", consentData.isPresent());
         if (consentData.isPresent()) {
-
-            // Get All Existing ClauseCode
             List<Long> clauseCodeExists = new ArrayList<Long>();
+            logger.debug("consentData.get().getConsentEntityAssocs().size() = {}", consentData.get().getConsentEntityAssocs().size());
             for(int i=0; i<consentData.get().getConsentEntityAssocs().size(); i++){
                 clauseCodeExists.add(consentData.get().getConsentEntityAssocs().get(i).getClauseCode());
             }
 
             List<ConsentEntityAssoc> consentEntityAssocs = new ArrayList<ConsentEntityAssoc>();
-            // Set ConsentEntityAssoc
+
             if (!request.getConsent().getConsentEntityAssocs().toString().isEmpty()) {
                 for (int i = 0; i < request.getConsent().getConsentEntityAssocs().size(); i++) {
-                    // Check if ClauseCode exists in CLAUSE table
+
                     long clauseCode = request.getConsent().getConsentEntityAssocs().get(i).getClauseCode();
 
                     if (clauseCodeExists.contains(clauseCode)){
-                        // Response Mapping for Data Not Found
                         errMessages.add("ConsentId " + consentId + " already have ClauseCode " + clauseCode);
                         return errMessages;
                     }
                     Optional<Clause> clause = clauseRepository.findById(clauseCode);
                     if (clause.isPresent()) {
-                        // Set EndDate to 5 years from Start Date
                         Calendar renewed = Calendar.getInstance();
                         renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
                         Date renewalDate = renewed.getTime();
 
                         ConsentEntityAssoc consentEntityAssoc = new ConsentEntityAssoc();
-                        // Set ClauseCode
                         consentEntityAssoc.setClauseCode(request.getConsent().getConsentEntityAssocs().get(i).getClauseCode());
-
-                        // Set CreateDate to Current Date
                         consentEntityAssoc.setCreateDate(currentDate);
-
-                        // Set EndDate to Renewal Date
                         consentEntityAssoc.setEndDate(renewalDate);
-
-                        // Set CreateUser with the same value as ConsentGiverId
                         consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
-                        // Add ConsentEntityAssoc to List of ConsentEntityAssoc
                         consentEntityAssocs.add(consentEntityAssoc);
                     } else {
-                        // Set ErrorMessages
                         errMessages.add("ClauseCode " + clauseCode + " Not Found");
                     }
                 }
 
-                // Validate ClauseCode
                 if (!errMessages.isEmpty()){
                     return errMessages;
                 }
 
-                // Add new ConsentEntityAssocs to existing consent
                 consentData.get().getConsentEntityAssocs().addAll(consentEntityAssocs);
+                logger.debug("Save consentData = {}", consentData);
                 consentRepository.save(consentData.get());
             }
             return null;
         } else {
-            // Response Mapping for Data Not Found
             errMessages.add("ConsentId " + consentId + " Not Found");
             return errMessages;
         }
     }
 
     public boolean deleteConsentEntityAssoc(DeleteConsentEntityAssocRequestWrapper request) {
-        // Check if consentEntityAssocId exists
+
         long consentEntityAssocId = request.getConsentEntityAssoc().getConsentEntityAssocId();
 
         if (consentEntityAssocRepository.existsById(consentEntityAssocId)) {
-            // Delete clause by ClauseCode
+            logger.debug("Delete ConsentEntityAssocRepository where ConsentEntityAssocId = {}", consentEntityAssocId);
             consentEntityAssocRepository.deleteById(consentEntityAssocId);
             return true;
         } else return false;

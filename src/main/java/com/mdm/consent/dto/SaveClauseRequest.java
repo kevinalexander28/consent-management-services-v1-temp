@@ -13,9 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ToString
 public class SaveClauseRequest {
-    /*
-    @JsonProperty -> change the name of a field to map to another JSON property
-    */
 
     @NotNull(message = "ClauseCode can't be Null")
     @JsonProperty("ClauseCode")

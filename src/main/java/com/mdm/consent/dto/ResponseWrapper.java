@@ -13,9 +13,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class ResponseWrapper {
-    /*
-    @JsonProperty -> change the name of a field to map to another JSON property
-    */
 
     @JsonProperty("Status")
     private int status;

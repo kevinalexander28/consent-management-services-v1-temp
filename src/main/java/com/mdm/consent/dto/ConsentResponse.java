@@ -16,9 +16,6 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
 public class ConsentResponse {
-    /*
-    @JsonProperty -> change the name of a field to map to another JSON property
-    */
 
     @JsonProperty("Status")
     private int status;

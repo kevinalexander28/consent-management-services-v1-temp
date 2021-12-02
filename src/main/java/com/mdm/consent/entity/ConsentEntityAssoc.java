@@ -17,29 +17,6 @@ import java.util.Date;
 @Table(name = "CONSENTENTITYASSOC")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConsentEntityAssoc {
-    /*
-    @Id -> declare primary key
-    @GeneratedValue -> generate value of the field
-    @JsonProperty -> change the name of a field to map to another JSON property
-    @Column -> specify the mapped column for a persistent property or field
-    @JsonFormat -> specify how to format fields and/or properties for JSON output
-    @Temporal -> indicate a specific mapping of java.util.Date or java.util.Calendar
-    */
-
-    /*
-    CREATE TABLE CONSENTENTITYASSOC (
-        CONSENT_ENTITY_ASSOC_ID BIGINT NOT NULL,
-        CLAUSE_CODE BIGINT NOT NULL,
-        CREATE_DATE DATETIME2 NOT NULL,
-        CREATE_USER VARCHAR(255) NOT NULL,
-        LAST_UPDATE_DATE DATETIME2 NOT NULL,
-        LAST_UPDATE_USER VARCHAR(255) NOT NULL,
-        CONSENT_ID BIGINT,
-        PRIMARY KEY (CONSENT_ENTITY_ASSOC_ID)
-    )
-
-    ALTER TABLE CONSENTENTITYASSOC ADD CONSTRAINT FK23O2D7U586QW891O3BXGWX63S FOREIGN KEY (CONSENT_ID) REFERENCES CONSENT
-    */
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

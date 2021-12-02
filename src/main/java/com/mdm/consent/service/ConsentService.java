@@ -7,6 +7,8 @@ import com.mdm.consent.entity.ConsentEntityAssoc;
 import com.mdm.consent.repository.ClauseRepository;
 import com.mdm.consent.repository.ConsentEntityAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ import java.util.*;
 
 @Service
 public class ConsentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClauseService.class);
+
     @Autowired
     private ConsentRepository consentRepository;
 
@@ -28,14 +33,11 @@ public class ConsentService {
         List<String> errMessages = new ArrayList<>();
 
         try {
-            // Get Current Date
             Calendar now = Calendar.getInstance();
             Date currentDate = now.getTime();
 
-            // Declare Consent
             Consent consent = new Consent();
 
-            // Set Values
             consent.setCifId(request.getConsent().getCifId());
             consent.setIdType(request.getConsent().getIdType());
             consent.setIdNumber(request.getConsent().getIdNumber());
@@ -45,43 +47,31 @@ public class ConsentService {
             consent.setConsentGiverId(request.getConsent().getConsentGiverId());
             consent.setBranchCode(request.getConsent().getBranchCode());
 
-            // Set CreateDate, StartDate, and LastUpdateDate to Current Date
             consent.setCreateDate(currentDate);
             consent.setStartDate(currentDate);
             consent.setLastUpdateDate(currentDate);
             consent.setEndDate(null);
 
-            // Set LastUpdateUser with the same value as CreateUser only when Add New Consent (First Time)
             consent.setLastUpdateUser(request.getConsent().getConsentGiverId());
 
             List<ConsentEntityAssoc> consentEntityAssocs = new ArrayList<ConsentEntityAssoc>();
-            // Set ConsentEntityAssoc
+
             for (int i=0; i<request.getConsent().getConsentEntityAssocs().size(); i++){
-                // Check if ClauseCode exists in CLAUSE table
                 long clauseCode = request.getConsent().getConsentEntityAssocs().get(i).getClauseCode();
                 Optional<Clause> clause = clauseRepository.findById(clauseCode);
+                logger.debug("clause isPresent = {}", clause.isPresent());
                 if (clause.isPresent()){
-                    // Set EndDate to 5 years from Start Date
                     Calendar renewed = Calendar.getInstance();
                     renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
                     Date renewalDate = renewed.getTime();
 
                     ConsentEntityAssoc consentEntityAssoc = new ConsentEntityAssoc();
-                    // Set ClauseCode
                     consentEntityAssoc.setClauseCode(request.getConsent().getConsentEntityAssocs().get(i).getClauseCode());
-
-                    // Set CreateDate to Current Date
                     consentEntityAssoc.setCreateDate(currentDate);
-
-                    // Set EndDate to Renewal Date
                     consentEntityAssoc.setEndDate(renewalDate);
-
-                    // Set CreateUser with the same value as ConsentGiverId
                     consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
-                    // Add ConsentEntityAssoc to List of ConsentEntityAssoc
                     consentEntityAssocs.add(consentEntityAssoc);
                 } else {
-                    // Set ErrorMessages
                     errMessages.add("ClauseCode " + clauseCode + " Not Found");
                 }
             }
@@ -90,9 +80,8 @@ public class ConsentService {
                 return errMessages;
             }
 
-            // Add List of ConsentEntityAssoc to Consent
             consent.setConsentEntityAssocs(consentEntityAssocs);
-            // Save Consent
+            logger.debug("Save consent = {}", consent);
             consentRepository.save(consent);
             return null;
         } catch (Exception e) {
