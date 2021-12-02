@@ -667,7 +667,6 @@ public class ConsentController {
             clauseRepository.deleteById(clauseCode);
 
             // Response Mapping
-            responseWrapper.setErrros(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.OK.name());
             responseWrapper.setStatus(HttpStatus.OK.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
