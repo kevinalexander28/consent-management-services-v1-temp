@@ -18,9 +18,6 @@ import java.util.*;
 public class ClauseController {
 
     @Autowired
-    private ClauseRepository clauseRepository;
-
-    @Autowired
     private ClauseService clauseService;
 
     @PostMapping("/saveClause")
@@ -105,7 +102,7 @@ public class ClauseController {
 
             boolean isDeleted = clauseService.deleteClause(request);
 
-            if (isDeleted) {
+            if (!isDeleted) {
                 // Response Mapping for Data Not Found
                 errMessages.add("ClauseCode " + request.getClause().getClauseCode() + " Not Found");
                 responseWrapper.setErrors(errMessages);
