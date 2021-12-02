@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -16,43 +18,43 @@ import javax.validation.constraints.NotEmpty;
 @ToString
 public class UpdateConsentRequest {
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "ConsentId can't be Null")
     @JsonProperty("ConsentId")
-    private long consentId;
+    private Long consentId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "CIF can't be Blank")
     @JsonProperty("CIF")
     private String cifId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "IdType can't be Blank")
     @JsonProperty("IdType")
     private String idType;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "IdNumber can't be Blank")
     @JsonProperty("IdNumber")
     private String idNumber;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "TenantType can't be Null")
     @JsonProperty("TenantType")
-    private long tenantType;
+    private Long tenantType;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "ProcPurpId can't be Null")
     @JsonProperty("ProcPurpId")
-    private long procPurpId;
+    private Long procPurpId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "AgreeInd can't be Null")
     @JsonProperty("AgreeInd")
-    private long agreeInd;
+    private Long agreeInd;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "ConsentGiverId can't be Blank")
     @JsonProperty("ConsentGiverId")
     private String consentGiverId;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotBlank(message = "BranchCode can't be Blank")
     @JsonProperty("BranchCode")
     private String branchCode;
 
-    @NotEmpty(message = "{constraints.NotEmpty.message}")
+    @NotNull(message = "EndReasonType can't be Null")
     @JsonProperty("EndReasonType")
-    private long endReasonType;
+    private Long endReasonType;
 }

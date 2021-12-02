@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -16,10 +14,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class UpdateConsentRequestWrapper {
+public class GetConsentByCifOrIdNumberRequest {
 
-    @NotNull(message = "Consent can't be Null")
-    @JsonProperty("Consent")
-    @Valid
-    private UpdateConsentRequest consent;
+    @JsonProperty("CIF")
+    private String cifId;
+
+    @JsonProperty("IdType")
+    private String idType;
+
+    @JsonProperty("IdNumber")
+    private String idNumber;
 }

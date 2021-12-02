@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdm.consent.entity.Consent;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Accessors(chain = true)
 @NoArgsConstructor
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
 public class ConsentListResponse {
     /*
@@ -18,9 +21,15 @@ public class ConsentListResponse {
     */
 
     @JsonProperty("Status")
-    private String status;
+    private int status;
+
+    @JsonProperty("ResponseMessage")
+    private String responseMessage;
+
+    @JsonProperty("Errors")
+    private List<String> errros;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("Consent")
-    private List<Consent> consent;
+    @JsonProperty("Consents")
+    private List<Consent> consents;
 }

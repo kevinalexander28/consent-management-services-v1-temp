@@ -1,5 +1,6 @@
 package com.mdm.consent.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class ResponseWrapper {
     /*
@@ -18,9 +20,9 @@ public class ResponseWrapper {
     @JsonProperty("Status")
     private int status;
 
-    @JsonProperty("Error")
-    private String error;
+    @JsonProperty("ResponseMessage")
+    private String responseMessage;
 
-    @JsonProperty("ErrorMessage")
-    private List<String> errorMessage;
+    @JsonProperty("Errors")
+    private List<String> errros;
 }
