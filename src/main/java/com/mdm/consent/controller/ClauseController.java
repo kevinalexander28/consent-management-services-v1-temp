@@ -67,7 +67,7 @@ public class ClauseController {
 
         try {
             // Get all clauses in CLAUSE table
-            List<Clause> clauseList = clauseRepository.findAll();
+            List<Clause> clauseList = clauseService.getAllClauses();
 
             // Response Mapping
             clauseListResponse.setClause(clauseList);
@@ -103,19 +103,16 @@ public class ClauseController {
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
             }
 
-            // Check if clause exists
-            long clauseCode = request.getClause().getClauseCode();
-            if (!clauseRepository.existsById(clauseCode)) {
+            boolean isDeleted = clauseService.deleteClause(request);
+
+            if (isDeleted) {
                 // Response Mapping for Data Not Found
-                errMessages.add("ClauseCode " + clauseCode + " Not Found");
+                errMessages.add("ClauseCode " + request.getClause().getClauseCode() + " Not Found");
                 responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
             }
-
-            // Delete clause by ClauseCode
-            clauseRepository.deleteById(clauseCode);
 
             // Response Mapping
             responseWrapper.setResponseMessage(HttpStatus.OK.name());
