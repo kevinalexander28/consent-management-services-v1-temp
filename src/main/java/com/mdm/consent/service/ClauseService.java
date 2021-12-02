@@ -1,16 +1,11 @@
 package com.mdm.consent.service;
 
 import com.mdm.consent.dto.DeleteClauseRequestWrapper;
-import com.mdm.consent.dto.ResponseWrapper;
 import com.mdm.consent.dto.SaveClauseRequestWrapper;
 import com.mdm.consent.entity.Clause;
 import com.mdm.consent.repository.ClauseRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 
 import java.util.Calendar;
 import java.util.Date;

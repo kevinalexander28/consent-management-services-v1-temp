@@ -7,10 +7,7 @@ import com.mdm.consent.entity.ConsentEntityAssoc;
 import com.mdm.consent.repository.ClauseRepository;
 import com.mdm.consent.repository.ConsentEntityAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -141,7 +138,7 @@ public class ConsentService {
         }
     }
 
-    public Consent getConsent(@NotNull GetConsentRequestWrapper request) {
+    public Consent getConsent(GetConsentRequestWrapper request) {
         // Check if ConsentId exists in CONSENT table
         long consentId = request.getConsent().getConsentId();
         Optional<Consent> consentData = consentRepository.findById(consentId);

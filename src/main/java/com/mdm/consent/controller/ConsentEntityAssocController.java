@@ -1,10 +1,7 @@
 package com.mdm.consent.controller;
 
 import com.mdm.consent.dto.*;
-import com.mdm.consent.entity.*;
-import com.mdm.consent.repository.*;
 import com.mdm.consent.service.ConsentEntityAssocService;
-import com.mdm.consent.service.ConsentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +14,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/consent-management-services-v1")
 public class ConsentEntityAssocController {
-
-    @Autowired
-    private ConsentRepository consentRepository;
-
-    @Autowired
-    private ConsentEntityAssocRepository consentEntityAssocRepository;
-
-    @Autowired
-    private ClauseRepository clauseRepository;
 
     @Autowired
     private ConsentEntityAssocService consentEntityAssocService;
@@ -66,6 +54,7 @@ public class ConsentEntityAssocController {
             return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
+            assert errMessages != null;
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());

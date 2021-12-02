@@ -1,9 +1,7 @@
 package com.mdm.consent.service;
 
 import com.mdm.consent.dto.AddConsentEntityAssocRequestWrapper;
-import com.mdm.consent.dto.DeleteClauseRequestWrapper;
 import com.mdm.consent.dto.DeleteConsentEntityAssocRequestWrapper;
-import com.mdm.consent.dto.SaveClauseRequestWrapper;
 import com.mdm.consent.entity.Clause;
 import com.mdm.consent.entity.Consent;
 import com.mdm.consent.entity.ConsentEntityAssoc;
@@ -11,8 +9,6 @@ import com.mdm.consent.repository.ClauseRepository;
 import com.mdm.consent.repository.ConsentEntityAssocRepository;
 import com.mdm.consent.repository.ConsentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

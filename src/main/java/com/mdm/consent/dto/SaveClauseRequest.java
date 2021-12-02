@@ -1,12 +1,9 @@
 package com.mdm.consent.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mdm.consent.entity.Clause;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 

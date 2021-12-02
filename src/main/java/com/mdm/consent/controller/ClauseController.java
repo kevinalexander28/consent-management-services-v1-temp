@@ -2,7 +2,6 @@ package com.mdm.consent.controller;
 
 import com.mdm.consent.dto.*;
 import com.mdm.consent.entity.*;
-import com.mdm.consent.repository.*;
 import com.mdm.consent.service.ClauseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
