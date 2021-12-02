@@ -187,7 +187,6 @@ public class ConsentController {
                 return new ResponseEntity<>(consentListResponse, HttpStatus.BAD_REQUEST);
             }
 
-            // Check If Cif or IdNumber is Null
             if (request.getConsent().getCifId() == null || (request.getConsent().getIdType() == null && request.getConsent().getIdNumber() == null)){
                 errMessages.add("(CIF) or (IdType and IdNumber) can't be Null");
                 consentListResponse.setErrors(errMessages);
@@ -277,7 +276,6 @@ public class ConsentController {
             logger.debug("Response Mapping for {} = {}", HttpStatus.OK.value(), responseWrapper);
             return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
         } catch (Exception e) {
-            // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());

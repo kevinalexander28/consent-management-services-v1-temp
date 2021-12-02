@@ -94,16 +94,13 @@ public class ConsentService {
 
         List<String> errMessages = new ArrayList<>();
 
-        // Check if ConsentId exists in CONSENT table
         long consentId = request.getConsent().getConsentId();
         Optional<Consent> existingConsent = consentRepository.findById(consentId);
 
         if (existingConsent.isPresent()) {
-            // Get Current Date
             Calendar now = Calendar.getInstance();
             Date currentDate = now.getTime();
 
-            // Set New Values
             existingConsent.get().setCifId(request.getConsent().getCifId());
             existingConsent.get().setIdType(request.getConsent().getIdType());
             existingConsent.get().setIdNumber(request.getConsent().getIdNumber());
@@ -114,30 +111,24 @@ public class ConsentService {
             existingConsent.get().setEndReasonType(request.getConsent().getEndReasonType());
             existingConsent.get().setLastUpdateUser(request.getConsent().getConsentGiverId());
 
-            // Set LastUpdateDate to Current Date
             existingConsent.get().setLastUpdateDate(currentDate);
-
-            // Save Consent
+            logger.debug("Update consent = {}", existingConsent);
             consentRepository.save(existingConsent.get());
             return null;
         } else {
-            // Response Mapping for Data Not Found
             errMessages.add("ConsentId " + consentId + " Not Found");
             return errMessages;
         }
     }
 
     public Consent getConsent(GetConsentRequestWrapper request) {
-        // Check if ConsentId exists in CONSENT table
         long consentId = request.getConsent().getConsentId();
         Optional<Consent> consentData = consentRepository.findById(consentId);
 
         if (consentData.isPresent()){
             Consent consent = consentData.get();
 
-            // Get ClauseName for every ConsentEntityAssoc
             for(int i=0; i<consent.getConsentEntityAssocs().size(); i++){
-                // Check if ClauseCode exists in CLAUSE table
                 long clauseCode = consent.getConsentEntityAssocs().get(i).getClauseCode();
                 Optional<Clause> clauseData = clauseRepository.findById(clauseCode);
                 if (clauseData.isPresent()){
@@ -157,23 +148,17 @@ public class ConsentService {
         String idType = request.getConsent().getIdType();
         String idNumber = request.getConsent().getIdNumber();
 
-        // Get Consent by Cif or IdNumber
         List<Consent> consents = consentRepository.findByCifId(cif);
         List<Consent> consentsByIdNumber = consentRepository.findByIdTypeAndIdNumber(idType, idNumber);
 
-        // Remove Duplicates
         consentsByIdNumber.removeAll(consents);
         consents.addAll(consentsByIdNumber);
 
-        // Check if empty
         if (consents.isEmpty()) {
-
             return null;
         } else {
-            // Get ClauseName for every ConsentEntityAssoc
             for (Consent consent : consents) {
                 for (int j = 0; j < consent.getConsentEntityAssocs().size(); j++) {
-                    // Check if ClauseCode exists in CLAUSE table
                     long clauseCode = consent.getConsentEntityAssocs().get(j).getClauseCode();
                     Optional<Clause> clauseData = clauseRepository.findById(clauseCode);
                     if (clauseData.isPresent()) {
@@ -188,12 +173,10 @@ public class ConsentService {
     }
 
     public boolean deleteConsent(GetConsentRequestWrapper request) {
-        // Get consent_id
         long consentId = request.getConsent().getConsentId();
 
-        // Delete if exists
         if (consentRepository.existsById(consentId)) {
-            // Delete consent by ConsentId
+            logger.debug("Delete Consent where ConsentId= {}", consentId);
             consentRepository.deleteById(consentId);
             return true;
         } else return false;
