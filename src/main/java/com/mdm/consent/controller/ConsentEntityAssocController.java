@@ -38,7 +38,7 @@ public class ConsentEntityAssocController {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
                 // Response Mapping for Bad Request
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
@@ -72,7 +72,7 @@ public class ConsentEntityAssocController {
                         if (clauseCodeExists.contains(clauseCode)){
                             // Response Mapping for Data Not Found
                             errMessages.add("ConsentId " + consentId + " already have ClauseCode " + clauseCode);
-                            responseWrapper.setErrros(errMessages);
+                            responseWrapper.setErrors(errMessages);
                             responseWrapper.setResponseMessage(HttpStatus.NOT_ACCEPTABLE.name());
                             responseWrapper.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                             return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_ACCEPTABLE);
@@ -107,7 +107,7 @@ public class ConsentEntityAssocController {
                     // Validate ClauseCode
                     if (!errMessages.isEmpty()){
                         // Response Mapping for Data Not Found
-                        responseWrapper.setErrros(errMessages);
+                        responseWrapper.setErrors(errMessages);
                         responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                         responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                         return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
@@ -120,7 +120,7 @@ public class ConsentEntityAssocController {
             } else {
                 // Response Mapping for Data Not Found
                 errMessages.add("ConsentId " + consentId + " Not Found");
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
@@ -132,7 +132,7 @@ public class ConsentEntityAssocController {
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
-            responseWrapper.setErrros(errMessages);
+            responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -152,7 +152,7 @@ public class ConsentEntityAssocController {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
                 // Response Mapping for Bad Request
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
@@ -163,7 +163,7 @@ public class ConsentEntityAssocController {
             if (!consentEntityAssocRepository.existsById(consentEntityAssocId)) {
                 // Response Mapping for Data Not Found
                 errMessages.add("ConsentEntityAssocId " + consentEntityAssocId + " Not Found");
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
@@ -179,7 +179,7 @@ public class ConsentEntityAssocController {
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
-            responseWrapper.setErrros(errMessages);
+            responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);

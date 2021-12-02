@@ -27,7 +27,7 @@ public class ClauseListResponse {
     private String responseMessage;
 
     @JsonProperty("Errors")
-    private List<String> errros;
+    private List<String> errors;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("Clause")

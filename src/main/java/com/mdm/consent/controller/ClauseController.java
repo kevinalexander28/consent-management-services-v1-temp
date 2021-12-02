@@ -3,6 +3,7 @@ package com.mdm.consent.controller;
 import com.mdm.consent.dto.*;
 import com.mdm.consent.entity.*;
 import com.mdm.consent.repository.*;
+import com.mdm.consent.service.ClauseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,9 @@ public class ClauseController {
     @Autowired
     private ClauseRepository clauseRepository;
 
+    @Autowired
+    private ClauseService clauseService;
+
     @PostMapping("/saveClause")
     public ResponseEntity<ResponseWrapper> saveClause(@Valid @RequestBody SaveClauseRequestWrapper request, Errors errors) {
 
@@ -32,29 +36,14 @@ public class ClauseController {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
                 // Response Mapping for Bad Request
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
             }
 
-            // Get Current Date
-            Calendar now = Calendar.getInstance();
-            Date currentDate = now.getTime();
-
-            // Set Clause
-            Clause clause = new Clause();
-
-            clause.setClauseCode(request.getClause().getClauseCode());
-            clause.setClauseName(request.getClause().getClauseName());
-            clause.setClauseCategory(request.getClause().getClauseCategory());
-            clause.setClauseRenewalPeriod(request.getClause().getClauseRenewalPeriod());
-            clause.setCreateUser(request.getClause().getCreateUser());
-
-            clause.setCreateDate(currentDate);
-
             // Save Clause
-            clauseRepository.save(clause);
+            clauseService.saveClause(request);
 
             // Response Mapping
             responseWrapper.setResponseMessage(HttpStatus.CREATED.name());
@@ -63,7 +52,7 @@ public class ClauseController {
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
-            responseWrapper.setErrros(errMessages);
+            responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -88,7 +77,7 @@ public class ClauseController {
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
-            clauseListResponse.setErrros(errMessages);
+            clauseListResponse.setErrors(errMessages);
             clauseListResponse.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             clauseListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(clauseListResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -108,7 +97,7 @@ public class ClauseController {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
                 // Response Mapping for Bad Request
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
@@ -119,7 +108,7 @@ public class ClauseController {
             if (!clauseRepository.existsById(clauseCode)) {
                 // Response Mapping for Data Not Found
                 errMessages.add("ClauseCode " + clauseCode + " Not Found");
-                responseWrapper.setErrros(errMessages);
+                responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
@@ -135,7 +124,7 @@ public class ClauseController {
         } catch (Exception e) {
             // Response Mapping for Internal Server Error
             errMessages.add(e.getMessage());
-            responseWrapper.setErrros(errMessages);
+            responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);

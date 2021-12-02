@@ -24,5 +24,5 @@ public class ResponseWrapper {
     private String responseMessage;
 
     @JsonProperty("Errors")
-    private List<String> errros;
+    private List<String> errors;
 }
