@@ -20,7 +20,7 @@ import java.util.List;
 public class Consent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("ConsentId")
     @Column(name = "consent_id")
     private long consentId;
