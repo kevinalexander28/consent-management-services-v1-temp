@@ -22,35 +22,37 @@ public class ClauseService {
     private ClauseRepository clauseRepository;
 
     public void saveClause(SaveClauseRequestWrapper request) {
-        Calendar now = Calendar.getInstance();
-        Date currentDate = now.getTime();
+        logger.info("SaveClause Service Called");
 
+        Date currentDate = Calendar.getInstance().getTime();
         Clause clause = new Clause();
-
-        logger.info("Set Clause Values");
         clause.setClauseCode(request.getClause().getClauseCode());
         clause.setClauseName(request.getClause().getClauseName());
         clause.setClauseCategory(request.getClause().getClauseCategory());
         clause.setClauseRenewalPeriod(request.getClause().getClauseRenewalPeriod());
         clause.setCreateUser(request.getClause().getCreateUser());
-
         clause.setCreateDate(currentDate);
 
-        logger.debug("clause = {}", clause);
+        logger.debug("Save this Clause = {}", clause);
         clauseRepository.save(clause);
     }
 
     public List<Clause> getAllClauses() {
+        logger.info("GetAllClause Service Called");
         return clauseRepository.findAll();
     }
 
     public boolean deleteClause(DeleteClauseRequestWrapper request) {
+        logger.info("DeleteClause Service Called");
         long clauseCode = request.getClause().getClauseCode();
-
         if (clauseRepository.existsById(clauseCode)) {
+            logger.debug("ClauseCode {} Found", clauseCode);
             logger.debug("Delete Clause where ClauseCode = {}", clauseCode);
             clauseRepository.deleteById(clauseCode);
             return true;
-        } else return false;
+        } else {
+            logger.debug("ClauseCode {} Not Found", clauseCode);
+            return false;
+        }
     }
 }

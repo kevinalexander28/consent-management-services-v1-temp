@@ -30,20 +30,19 @@ public class ConsentEntityAssocService {
     private ClauseRepository clauseRepository;
 
     public List<String> addConsentEntityAssoc(AddConsentEntityAssocRequestWrapper request) {
+        logger.info("AddConsentEntityAssoc Service Called");
 
         List<String> errMessages = new ArrayList<>();
-
-        Calendar now = Calendar.getInstance();
-        Date currentDate = now.getTime();
-
+        Date currentDate = Calendar.getInstance().getTime();
         long consentId = request.getConsent().getConsentId();
+
         logger.debug("Find Consent where ConsentId = {}", consentId);
         Optional<Consent> consentData = consentRepository.findById(consentId);
 
-        logger.debug("consentData isPresent = {}", consentData.isPresent());
         if (consentData.isPresent()) {
+            logger.debug("ConsentId {} Found", consentId);
             List<Long> clauseCodeExists = new ArrayList<Long>();
-            logger.debug("consentData.get().getConsentEntityAssocs().size() = {}", consentData.get().getConsentEntityAssocs().size());
+
             for(int i=0; i<consentData.get().getConsentEntityAssocs().size(); i++){
                 clauseCodeExists.add(consentData.get().getConsentEntityAssocs().get(i).getClauseCode());
             }
@@ -52,15 +51,14 @@ public class ConsentEntityAssocService {
 
             if (!request.getConsent().getConsentEntityAssocs().toString().isEmpty()) {
                 for (int i = 0; i < request.getConsent().getConsentEntityAssocs().size(); i++) {
-
                     long clauseCode = request.getConsent().getConsentEntityAssocs().get(i).getClauseCode();
-
                     if (clauseCodeExists.contains(clauseCode)){
                         errMessages.add("ConsentId " + consentId + " already have ClauseCode " + clauseCode);
                         return errMessages;
                     }
                     Optional<Clause> clause = clauseRepository.findById(clauseCode);
                     if (clause.isPresent()) {
+                        logger.debug("ClauseCode {} Found", clauseCode);
                         Calendar renewed = Calendar.getInstance();
                         renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
                         Date renewalDate = renewed.getTime();
@@ -72,33 +70,37 @@ public class ConsentEntityAssocService {
                         consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
                         consentEntityAssocs.add(consentEntityAssoc);
                     } else {
+                        logger.debug("ClauseCode {} Not Found", clauseCode);
                         errMessages.add("ClauseCode " + clauseCode + " Not Found");
                     }
                 }
-
                 if (!errMessages.isEmpty()){
                     return errMessages;
                 }
-
                 consentData.get().getConsentEntityAssocs().addAll(consentEntityAssocs);
-                logger.debug("Save consentData = {}", consentData);
+                logger.debug("Save this Consent = {}", consentData);
                 consentRepository.save(consentData.get());
             }
             return null;
         } else {
+            logger.debug("ConsentId {} Not Found", consentId);
             errMessages.add("ConsentId " + consentId + " Not Found");
             return errMessages;
         }
     }
 
     public boolean deleteConsentEntityAssoc(DeleteConsentEntityAssocRequestWrapper request) {
-
+        logger.info("DeleteConsentEntityAssoc Service Called");
         long consentEntityAssocId = request.getConsentEntityAssoc().getConsentEntityAssocId();
 
         if (consentEntityAssocRepository.existsById(consentEntityAssocId)) {
+            logger.debug("ClauseCode {} Found", consentEntityAssocId);
             logger.debug("Delete ConsentEntityAssocRepository where ConsentEntityAssocId = {}", consentEntityAssocId);
             consentEntityAssocRepository.deleteById(consentEntityAssocId);
             return true;
-        } else return false;
+        } else {
+            logger.debug("ClauseCode {} Not Found", consentEntityAssocId);
+            return false;
+        }
     }
 }

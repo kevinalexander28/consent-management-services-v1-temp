@@ -25,7 +25,7 @@ public class ClauseController {
 
     @PostMapping("/saveClause")
     public ResponseEntity<ResponseWrapper> saveClause(@Valid @RequestBody SaveClauseRequestWrapper request, Errors errors) {
-
+        logger.info("SaveClause API Called");
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<String> errMessages = new ArrayList<>();
 
@@ -35,60 +35,57 @@ public class ClauseController {
                 for (int i=0; i<errors.getErrorCount(); i++) {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
-
                 responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
-                logger.error("Error Response Mapping for {} = {}", HttpStatus.BAD_REQUEST.value(), responseWrapper);
+                logger.error("Error Response = {}", responseWrapper);
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
             }
-
             logger.info("Call SaveClause Service");
             clauseService.saveClause(request);
-
             responseWrapper.setResponseMessage(HttpStatus.CREATED.name());
             responseWrapper.setStatus(HttpStatus.CREATED.value());
-            logger.debug("Response Mapping for {} = {}", HttpStatus.CREATED.value(), responseWrapper);
+            logger.debug("Response = {}", responseWrapper);
             return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            logger.error("Error Response Mapping for {} = {}", HttpStatus.BAD_REQUEST.value(), responseWrapper);
+            logger.error("Error Response = {}", responseWrapper);
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/getAllClauses")
     public ResponseEntity<ClauseListResponse> getAllClauses() {
-
+        logger.info("GetAllClauses API Called");
         ClauseListResponse clauseListResponse = new ClauseListResponse();
         List<String> errMessages = new ArrayList<>();
 
         try {
             logger.info("Call GetAllClauses Service");
             List<Clause> clauseList = clauseService.getAllClauses();
-            logger.debug("clauseList = {}", clauseList);
+            logger.debug("ClauseList = {}", clauseList);
 
             clauseListResponse.setClause(clauseList);
             clauseListResponse.setResponseMessage(HttpStatus.OK.name());
             clauseListResponse.setStatus(HttpStatus.OK.value());
-            logger.error("Response Mapping for {} = {}", HttpStatus.OK.value(), clauseListResponse);
+            logger.debug("Response = {}", clauseListResponse);
             return new ResponseEntity<>(clauseListResponse, HttpStatus.OK);
         } catch (Exception e) {
             errMessages.add(e.getMessage());
             clauseListResponse.setErrors(errMessages);
             clauseListResponse.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             clauseListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            logger.error("Error Response Mapping for {} = {}", HttpStatus.INTERNAL_SERVER_ERROR.value(), clauseListResponse);
+            logger.error("Error Response = {}", clauseListResponse);
             return new ResponseEntity<>(clauseListResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/deleteClause")
     public ResponseEntity<ResponseWrapper> deleteClause(@Valid @RequestBody DeleteClauseRequestWrapper request, Errors errors) {
-
+        logger.info("DeleteClause API Called");
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<String> errMessages = new ArrayList<>();
 
@@ -98,14 +95,12 @@ public class ClauseController {
                 for (int i=0; i<errors.getErrorCount(); i++) {
                     errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
                 }
-
                 responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
                 responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
                 logger.error("Error Response Mapping for {} = {}", HttpStatus.BAD_REQUEST.value(), responseWrapper);
                 return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
             }
-
             logger.info("Call DeleteClause Service");
             boolean isDeleted = clauseService.deleteClause(request);
             logger.debug("isDeleted = {}", isDeleted);
@@ -115,20 +110,19 @@ public class ClauseController {
                 responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
-                logger.error("Error Response Mapping for {} = {}", HttpStatus.NOT_FOUND.value(), responseWrapper);
+                logger.error("Error Response = {}", responseWrapper);
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
             }
-
             responseWrapper.setResponseMessage(HttpStatus.OK.name());
             responseWrapper.setStatus(HttpStatus.OK.value());
-            logger.debug("Response Mapping for {} = {}", HttpStatus.OK.value(), responseWrapper);
+            logger.error("Error Response = {}", responseWrapper);
             return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
         } catch (Exception e) {
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            logger.error("Error Response Mapping for {} = {}", HttpStatus.INTERNAL_SERVER_ERROR.value(), responseWrapper);
+            logger.error("Error Response = {}", responseWrapper);
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
