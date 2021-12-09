@@ -7,9 +7,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Getter
@@ -42,6 +40,8 @@ public class AddConsentRequest {
     private Long procPurpId;
 
     @NotNull(message = "AgreeInd can't be Null")
+    @Min(value = 0, message = "Minimal value of AgreeInd is 0")
+    @Max(value = 2, message = "Maximal value of AgreeInd is 2")
     @JsonProperty("AgreeInd")
     private Long agreeInd;
 
