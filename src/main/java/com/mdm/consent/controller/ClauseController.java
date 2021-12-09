@@ -25,7 +25,7 @@ public class ClauseController {
 
     @PostMapping("/saveClause")
     public ResponseEntity<ResponseWrapper> saveClause(@Valid @RequestBody SaveClauseRequestWrapper request, Errors errors) {
-        logger.info("SaveClause API Called");
+        logger.info("SaveClause Controller Called");
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<String> errMessages = new ArrayList<>();
 
@@ -59,7 +59,7 @@ public class ClauseController {
 
     @GetMapping("/getAllClauses")
     public ResponseEntity<ClauseListResponse> getAllClauses() {
-        logger.info("GetAllClauses API Called");
+        logger.info("GetAllClauses Controller Called");
         ClauseListResponse clauseListResponse = new ClauseListResponse();
         List<String> errMessages = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public class ClauseController {
 
     @DeleteMapping("/deleteClause")
     public ResponseEntity<ResponseWrapper> deleteClause(@Valid @RequestBody DeleteClauseRequestWrapper request, Errors errors) {
-        logger.info("DeleteClause API Called");
+        logger.info("DeleteClause Controller Called");
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<String> errMessages = new ArrayList<>();
 
@@ -112,11 +112,12 @@ public class ClauseController {
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
                 logger.error("Error Response = {}", responseWrapper);
                 return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+            } else {
+                responseWrapper.setResponseMessage(HttpStatus.OK.name());
+                responseWrapper.setStatus(HttpStatus.OK.value());
+                logger.error("Error Response = {}", responseWrapper);
+                return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
             }
-            responseWrapper.setResponseMessage(HttpStatus.OK.name());
-            responseWrapper.setStatus(HttpStatus.OK.value());
-            logger.error("Error Response = {}", responseWrapper);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
         } catch (Exception e) {
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);

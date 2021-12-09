@@ -29,7 +29,7 @@ public class ConsentService {
     private ClauseRepository clauseRepository;
 
     public List<String> addConsent(AddConsentRequestWrapper request) {
-        logger.info("AddCOnsent Service Called");
+        logger.info("AddConsent Service Called");
 
         List<String> errMessages = new ArrayList<>();
 
@@ -76,12 +76,12 @@ public class ConsentService {
 
             if (!errMessages.isEmpty()){
                 return errMessages;
+            } else {
+                consent.setConsentEntityAssocs(consentEntityAssocs);
+                logger.debug("Save this Consent = {}", consent);
+                consentRepository.save(consent);
+                return null;
             }
-
-            consent.setConsentEntityAssocs(consentEntityAssocs);
-            logger.debug("Save this Consent = {}", consent);
-            consentRepository.save(consent);
-            return null;
         } catch (Exception e) {
             logger.debug("Error = {}", e.getMessage());
             errMessages.add(e.getMessage());
