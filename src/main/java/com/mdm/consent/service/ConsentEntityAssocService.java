@@ -80,8 +80,11 @@ public class ConsentEntityAssocService {
                 consentData.get().getConsentEntityAssocs().addAll(consentEntityAssocs);
                 logger.debug("Save this Consent = {}", consentData);
                 consentRepository.save(consentData.get());
+                return null;
+            } else {
+                errMessages.add("ConsentEntityAssocs can't be Null");
+                return errMessages;
             }
-            return null;
         } else {
             logger.debug("ConsentId {} Not Found", consentId);
             errMessages.add("ConsentId " + consentId + " Not Found");
