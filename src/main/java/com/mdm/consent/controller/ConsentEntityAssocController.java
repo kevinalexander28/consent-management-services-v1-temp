@@ -1,6 +1,8 @@
 package com.mdm.consent.controller;
 
-import com.mdm.consent.dto.*;
+import com.mdm.consent.dto.addconsententityassoc.AddConsentEntityAssocRequestWrapper;
+import com.mdm.consent.dto.deleteconsententityassoc.DeleteConsentEntityAssocRequestWrapper;
+import com.mdm.consent.dto.object.ResponseWrapper;
 import com.mdm.consent.service.ConsentEntityAssocService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

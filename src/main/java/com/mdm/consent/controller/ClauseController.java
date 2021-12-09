@@ -1,6 +1,9 @@
 package com.mdm.consent.controller;
 
-import com.mdm.consent.dto.*;
+import com.mdm.consent.dto.deleteclause.DeleteClauseRequestWrapper;
+import com.mdm.consent.dto.object.ClauseListResponse;
+import com.mdm.consent.dto.object.ResponseWrapper;
+import com.mdm.consent.dto.saveclause.SaveClauseRequestWrapper;
 import com.mdm.consent.entity.*;
 import com.mdm.consent.service.ClauseService;
 import org.slf4j.Logger;

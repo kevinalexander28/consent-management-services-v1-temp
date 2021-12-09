@@ -1,7 +1,7 @@
 package com.mdm.consent.service;
 
-import com.mdm.consent.dto.AddConsentEntityAssocRequestWrapper;
-import com.mdm.consent.dto.DeleteConsentEntityAssocRequestWrapper;
+import com.mdm.consent.dto.addconsententityassoc.AddConsentEntityAssocRequestWrapper;
+import com.mdm.consent.dto.deleteconsententityassoc.DeleteConsentEntityAssocRequestWrapper;
 import com.mdm.consent.entity.Clause;
 import com.mdm.consent.entity.Consent;
 import com.mdm.consent.entity.ConsentEntityAssoc;

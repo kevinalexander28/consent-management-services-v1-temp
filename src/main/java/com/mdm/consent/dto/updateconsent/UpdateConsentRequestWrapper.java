@@ -1,4 +1,4 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.updateconsent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.Valid;
-
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -16,10 +15,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class SaveClauseRequestWrapper {
+public class UpdateConsentRequestWrapper {
 
-    @NotNull(message = "Clause can't be Null")
-    @JsonProperty("Clause")
+    @NotNull(message = "Consent can't be Null")
+    @JsonProperty("Consent")
     @Valid
-    private SaveClauseRequest clause;
+    private UpdateConsentRequest consent;
 }

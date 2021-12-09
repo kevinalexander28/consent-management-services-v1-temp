@@ -1,4 +1,4 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.saveclause;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

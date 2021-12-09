@@ -1,11 +1,9 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.getconsentbyciforidnumber;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -14,9 +12,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class DeleteConsentEntityAssocRequest {
+public class GetConsentByCifOrIdNumberRequest {
 
-    @NotNull(message = "ConsentEntityAssocId can't be Null")
-    @JsonProperty("ConsentEntityAssocId")
-    private Long consentEntityAssocId;
+    @JsonProperty("CIF")
+    private String cifId;
+
+    @JsonProperty("IdType")
+    private String idType;
+
+    @JsonProperty("IdNumber")
+    private String idNumber;
 }

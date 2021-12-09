@@ -1,8 +1,13 @@
 package com.mdm.consent.controller;
 
-import com.mdm.consent.dto.*;
+import com.mdm.consent.dto.addconsent.AddConsentRequestWrapper;
+import com.mdm.consent.dto.getconsent.GetConsentRequestWrapper;
+import com.mdm.consent.dto.getconsentbyciforidnumber.GetConsentByCifOrIdNumberRequestWrapper;
+import com.mdm.consent.dto.object.ConsentListResponse;
+import com.mdm.consent.dto.object.ConsentResponse;
+import com.mdm.consent.dto.object.ResponseWrapper;
+import com.mdm.consent.dto.updateconsent.UpdateConsentRequestWrapper;
 import com.mdm.consent.entity.*;
-import com.mdm.consent.service.ClauseService;
 import com.mdm.consent.service.ConsentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

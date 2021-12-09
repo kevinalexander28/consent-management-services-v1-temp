@@ -1,6 +1,9 @@
 package com.mdm.consent.service;
 
-import com.mdm.consent.dto.*;
+import com.mdm.consent.dto.addconsent.AddConsentRequestWrapper;
+import com.mdm.consent.dto.getconsent.GetConsentRequestWrapper;
+import com.mdm.consent.dto.getconsentbyciforidnumber.GetConsentByCifOrIdNumberRequestWrapper;
+import com.mdm.consent.dto.updateconsent.UpdateConsentRequestWrapper;
 import com.mdm.consent.entity.Clause;
 import com.mdm.consent.entity.Consent;
 import com.mdm.consent.entity.ConsentEntityAssoc;

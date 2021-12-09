@@ -1,4 +1,4 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.addconsent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,10 +15,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class DeleteClauseRequestWrapper {
+public class AddConsentRequestWrapper {
 
-    @NotNull(message = "Clause can't be Null")
+    @NotNull(message = "Consent can't be Null")
     @Valid
-    @JsonProperty("Clause")
-    private DeleteClauseRequest clause;
+    @JsonProperty("Consent")
+    private AddConsentRequest consent;
 }

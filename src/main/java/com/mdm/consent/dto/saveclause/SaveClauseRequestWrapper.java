@@ -1,4 +1,4 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.saveclause;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.Valid;
+
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -15,10 +16,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class DeleteConsentEntityAssocRequestWrapper {
+public class SaveClauseRequestWrapper {
 
-    @NotNull(message = "ConsentEntityAssoc can't be Null")
+    @NotNull(message = "Clause can't be Null")
+    @JsonProperty("Clause")
     @Valid
-    @JsonProperty("ConsentEntityAssoc")
-    private DeleteConsentEntityAssocRequest consentEntityAssoc;
+    private SaveClauseRequest clause;
 }

@@ -1,11 +1,11 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.deleteclause;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -14,11 +14,11 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class ConsentEntityAssocDto {
+public class DeleteClauseRequestWrapper {
 
-    @NotNull(message = "ClauseCode can't be Null")
-    @JsonProperty("ClauseCode")
-    private Long clauseCode;
+    @NotNull(message = "Clause can't be Null")
+    @Valid
+    @JsonProperty("Clause")
+    private DeleteClauseRequest clause;
 }

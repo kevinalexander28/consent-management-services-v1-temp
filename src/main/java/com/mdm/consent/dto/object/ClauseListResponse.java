@@ -1,8 +1,8 @@
-package com.mdm.consent.dto;
+package com.mdm.consent.dto.object;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mdm.consent.entity.Consent;
+import com.mdm.consent.entity.Clause;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @ToString
-public class ConsentListResponse {
+public class ClauseListResponse {
 
     @JsonProperty("Status")
     private int status;
@@ -27,6 +27,6 @@ public class ConsentListResponse {
     private List<String> errors;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("Consents")
-    private List<Consent> consents;
+    @JsonProperty("Clause")
+    private List<Clause> clause;
 }
