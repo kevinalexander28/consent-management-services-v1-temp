@@ -20,7 +20,7 @@ import java.util.*;
 @Service
 public class ConsentService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClauseService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConsentService.class);
 
     @Autowired
     private ConsentRepository consentRepository;

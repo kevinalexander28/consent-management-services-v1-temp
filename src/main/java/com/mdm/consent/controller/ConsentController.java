@@ -98,7 +98,7 @@ public class ConsentController {
             errMessages = consentService.updateConsent(request);
             logger.debug("errMessages = {}", errMessages);
 
-            if (errMessages != null){
+            if (errMessages == null){
                 responseWrapper.setErrors(errMessages);
                 responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
                 responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());

@@ -21,7 +21,7 @@ import java.util.*;
 @RequestMapping("/consent-management-services-v1")
 public class ClauseController {
 
-    private static final Logger logger  = LoggerFactory.getLogger(ClauseService.class);
+    private static final Logger logger  = LoggerFactory.getLogger(ClauseController.class);
 
     @Autowired
     private ClauseService clauseService;

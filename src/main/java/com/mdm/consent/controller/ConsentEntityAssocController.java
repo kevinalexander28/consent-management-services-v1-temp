@@ -3,6 +3,7 @@ package com.mdm.consent.controller;
 import com.mdm.consent.dto.addconsententityassoc.AddConsentEntityAssocRequestWrapper;
 import com.mdm.consent.dto.deleteconsententityassoc.DeleteConsentEntityAssocRequestWrapper;
 import com.mdm.consent.dto.object.ResponseWrapper;
+import com.mdm.consent.dto.updateconsententityassoc.UpdateConsentEntityAssocRequestWrapper;
 import com.mdm.consent.service.ConsentEntityAssocService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ import java.util.*;
 @RequestMapping("/consent-management-services-v1")
 public class ConsentEntityAssocController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConsentController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConsentEntityAssocController.class);
 
     @Autowired
     private ConsentEntityAssocService consentEntityAssocService;
@@ -107,6 +108,53 @@ public class ConsentEntityAssocController {
                 return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
             }
         } catch (Exception e) {
+            errMessages.add(e.getMessage());
+            responseWrapper.setErrors(errMessages);
+            responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
+            responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            logger.error("Error Response = {}", responseWrapper);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/updateConsentEntityAssoc")
+    public ResponseEntity<ResponseWrapper> updateConsentEntityAssoc(@Valid @RequestBody UpdateConsentEntityAssocRequestWrapper request, Errors errors) {
+        logger.info("UpdateConsentEntityAssoc Controller Called");
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        List<String> errMessages = new ArrayList<>();
+
+        try {
+            logger.info("Validate Request Body");
+            if (errors.hasErrors()) {
+                for (int i=0; i<errors.getErrorCount(); i++) {
+                    errMessages.add(errors.getAllErrors().get(i).getDefaultMessage());
+                }
+                responseWrapper.setErrors(errMessages);
+                responseWrapper.setResponseMessage(HttpStatus.BAD_REQUEST.name());
+                responseWrapper.setStatus(HttpStatus.BAD_REQUEST.value());
+                logger.error("Error Response = {}", responseWrapper);
+                return new ResponseEntity<>(responseWrapper, HttpStatus.BAD_REQUEST);
+            }
+
+            logger.info("Call UpdateConsentEntityAssoc");
+            errMessages = consentEntityAssocService.updateConsentEntityAssoc(request);
+            logger.debug("errMessages = {}", errMessages);
+
+            if (errMessages == null) {
+                System.out.println("errMessages:errMessages: " + errMessages);
+                responseWrapper.setErrors(errMessages);
+                responseWrapper.setResponseMessage(HttpStatus.NOT_FOUND.name());
+                responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
+                logger.error("Error Response = {}", responseWrapper);
+                return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+            } else {
+                responseWrapper.setResponseMessage(HttpStatus.OK.name());
+                responseWrapper.setStatus(HttpStatus.OK.value());
+                logger.debug("Response Mapping for {} = {}", HttpStatus.OK.value(), responseWrapper);
+                return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            assert errMessages != null;
             errMessages.add(e.getMessage());
             responseWrapper.setErrors(errMessages);
             responseWrapper.setResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());

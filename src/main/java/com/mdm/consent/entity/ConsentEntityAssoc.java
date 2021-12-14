@@ -45,7 +45,7 @@ public class ConsentEntityAssoc {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @JsonProperty("EndDate")
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     private Date endDate;
 }
 
