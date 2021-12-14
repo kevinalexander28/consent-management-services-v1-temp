@@ -34,7 +34,7 @@ public class Clause {
     private String clauseName;
 
     @JsonProperty("ClauseRenewalPeriod")
-    @Column(name = "clause_renewal_period", nullable = false)
+    @Column(name = "clause_renewal_period")
     private int clauseRenewalPeriod;
 
     @JsonProperty("CreateUser")

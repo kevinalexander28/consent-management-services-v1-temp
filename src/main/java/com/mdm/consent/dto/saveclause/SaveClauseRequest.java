@@ -27,7 +27,6 @@ public class SaveClauseRequest {
     @Length(min = 3, message = "ClauseName min. Length = 3")
     private String clauseName;
 
-    @NotNull(message = "ClauseRenewalPeriod can't be Null")
     @JsonProperty("ClauseRenewalPeriod")
     private Integer clauseRenewalPeriod;
 

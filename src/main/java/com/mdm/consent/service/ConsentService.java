@@ -61,14 +61,18 @@ public class ConsentService {
                 Optional<Clause> clause = clauseRepository.findById(clauseCode);
                 if (clause.isPresent()){
                     logger.debug("ClauseCode {} Found", clauseCode);
-                    Calendar renewed = Calendar.getInstance();
-                    renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
-                    Date renewalDate = renewed.getTime();
-
                     ConsentEntityAssoc consentEntityAssoc = new ConsentEntityAssoc();
+                    if (clause.get().getClauseRenewalPeriod() == 0) {
+                        consentEntityAssoc.setEndDate(null);
+                    } else {
+                        Calendar renewed = Calendar.getInstance();
+                        renewed.add(Calendar.YEAR, clause.get().getClauseRenewalPeriod());
+                        Date renewalDate = renewed.getTime();
+                        consentEntityAssoc.setEndDate(renewalDate);
+                    }
                     consentEntityAssoc.setClauseCode(request.getConsent().getConsentEntityAssocs().get(i).getClauseCode());
                     consentEntityAssoc.setCreateDate(currentDate);
-                    consentEntityAssoc.setEndDate(renewalDate);
+
                     consentEntityAssoc.setCreateUser(request.getConsent().getConsentGiverId());
                     consentEntityAssocs.add(consentEntityAssoc);
                 } else {
